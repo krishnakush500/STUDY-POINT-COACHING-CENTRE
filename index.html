@@ -53,6 +53,40 @@
     .director-details h3{font-size:1.1rem; margin-bottom:5px;}
     .director-details p{font-size:0.9rem;}
 
+    /* Online Test Button */
+    .online-test-container {
+      text-align: center;
+      margin: 15px auto;
+      width: 100%;
+      max-width: 1200px;
+    }
+    .online-test-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 35px;
+      background: linear-gradient(to right, #4CAF50, #2E7D32);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+      text-decoration: none;
+      text-align: center;
+    }
+    .online-test-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      background: linear-gradient(to right, #43A047, #1B5E20);
+    }
+    .online-test-btn i {
+      font-size: 1.3rem;
+    }
+
     /* Moving Admission Text */
     .marquee-container {
       background:#ffc107;
@@ -418,6 +452,13 @@
       .director-photo { margin-right:0; margin-bottom:10px; }
       .director-details { text-align:center; }
       
+      /* Online test button mobile */
+      .online-test-btn {
+        width: 90%;
+        padding: 12px 25px;
+        font-size: 1rem;
+      }
+      
       .results-list { grid-template-columns:1fr; }
       
       .marks-table { font-size:0.85rem; min-width:450px; }
@@ -489,6 +530,13 @@
         <p><i class="fas fa-phone"></i> Call: +91 6202608202</p>
       </div>
     </div>
+  </div>
+
+  <!-- Online Test Button -->
+  <div class="online-test-container">
+    <a href="onlinetest.html" class="online-test-btn" target="_blank">
+      <i class="fas fa-laptop-code"></i> Online Test
+    </a>
   </div>
 
   <!-- Moving Notice Text -->
