@@ -3,21 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Study Point Coaching - Online Test Platform (Demo)</title>
+    <title>Study Point Coaching Centre - Online Test Platform</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <style>
         /* ===== GLOBAL STYLES ===== */
         :root {
-            --primary-blue: #1976D2;
-            --light-blue: #2196F3;
-            --dark-blue: #0D47A1;
+            --primary-blue: #1E88E5;
+            --light-blue: #42A5F5;
+            --dark-blue: #1565C0;
             --primary-red: #D32F2F;
             --light-red: #EF5350;
             --dark-red: #C62828;
             --primary-orange: #FF9800;
             --dark-orange: #F57C00;
+            --primary-purple: #7B1FA2;
+            --light-purple: #9C27B0;
             --white: #FFFFFF;
             --light-gray: #F5F5F5;
             --medium-gray: #E0E0E0;
@@ -77,6 +82,12 @@
         .coaching-header h1 {
             font-size: 1.6rem;
             margin-bottom: 8px;
+        }
+
+        .coaching-header .subtitle {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            opacity: 0.9;
         }
 
         .coaching-header .details {
@@ -173,6 +184,15 @@
             background-color: var(--dark-orange);
         }
 
+        .btn-purple {
+            background-color: var(--primary-purple);
+            color: var(--white);
+        }
+
+        .btn-purple:hover {
+            background-color: var(--light-purple);
+        }
+
         .btn-block {
             display: block;
             width: 100%;
@@ -247,7 +267,7 @@
 
         select.form-control {
             appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='%231976D2' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='%231E88E5' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 12px center;
             background-size: 14px;
@@ -419,7 +439,7 @@
         }
 
         .option.selected {
-            background-color: rgba(25, 118, 210, 0.1);
+            background-color: rgba(30, 136, 229, 0.1);
             border-color: var(--primary-blue);
         }
 
@@ -459,10 +479,26 @@
             min-width: 0;
             padding: 10px 8px;
             font-size: 0.85rem;
+            position: relative;
         }
 
         .nav-btn i {
             font-size: 0.9rem;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .nav-btn .spinner {
+            display: none;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .question-progress {
@@ -555,7 +591,7 @@
         }
 
         .director-info {
-            background-color: rgba(25, 118, 210, 0.1);
+            background-color: rgba(30, 136, 229, 0.1);
             padding: 8px 10px;
             border-radius: 5px;
             margin-top: 8px;
@@ -646,7 +682,7 @@
         }
 
         .first-division {
-            background-color: rgba(25, 118, 210, 0.2);
+            background-color: rgba(30, 136, 229, 0.2);
             color: var(--primary-blue);
             border: 3px solid var(--primary-blue);
         }
@@ -711,12 +747,57 @@
         }
 
         .success-message {
-            background-color: rgba(25, 118, 210, 0.1);
+            background-color: rgba(30, 136, 229, 0.1);
             color: var(--primary-blue);
             padding: 12px;
             border-radius: var(--border-radius);
             margin: 15px 0;
             text-align: center;
+            font-size: 0.9rem;
+        }
+
+        /* ===== SUBMISSION OVERLAY ===== */
+        .submission-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .submission-content {
+            background-color: var(--white);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .submission-spinner {
+            font-size: 3rem;
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+            animation: spin 1.5s linear infinite;
+        }
+
+        .submission-text {
+            font-size: 1.2rem;
+            color: var(--text-color);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .submission-subtext {
+            color: var(--dark-gray);
             font-size: 0.9rem;
         }
 
@@ -899,6 +980,19 @@
             .nav-btn i {
                 font-size: 0.85rem;
             }
+            
+            .submission-content {
+                padding: 20px;
+                max-width: 300px;
+            }
+            
+            .submission-spinner {
+                font-size: 2.5rem;
+            }
+            
+            .submission-text {
+                font-size: 1.1rem;
+            }
         }
 
         @media (max-width: 480px) {
@@ -984,6 +1078,24 @@
             .btn {
                 padding: 8px 10px;
                 font-size: 0.85rem;
+            }
+            
+            .submission-content {
+                padding: 15px;
+                max-width: 280px;
+            }
+            
+            .submission-spinner {
+                font-size: 2rem;
+                margin-bottom: 10px;
+            }
+            
+            .submission-text {
+                font-size: 1rem;
+            }
+            
+            .submission-subtext {
+                font-size: 0.8rem;
             }
         }
         
@@ -1111,11 +1223,16 @@
         <div class="container">
             <div class="coaching-header">
                 <h1>STUDY POINT COACHING CENTRE</h1>
-                <p>Muzaffarpur, Bihar</p>
+                <div class="subtitle">मुजफ्फरपुर, बिहार</div>
+                <p>Excellence in Education Since 2015</p>
                 <div class="details">
                     <div class="detail-item">
                         <i class="fas fa-user-tie"></i>
-                        <span>DIRECTOR: GUDDU KUMAR (B.Sc, B.Ed CTET)</span>
+                        <span>DIRECTOR: GUDDU KUMAR</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>B.Sc, B.Ed (CTET)</span>
                     </div>
                     <div class="detail-item">
                         <i class="fas fa-phone"></i>
@@ -1127,14 +1244,17 @@
             <div class="card compact-card">
                 <h2>Available Tests</h2>
                 <p>Select a test to begin your examination.</p>
+                <div id="loading-tests" class="loading">
+                    <i class="fas fa-spinner fa-spin"></i> Loading tests from Firebase...
+                </div>
             </div>
 
             <div id="tests-container" class="tests-grid">
-                <!-- Tests will be loaded here -->
+                <!-- Tests will be loaded here from Firebase -->
             </div>
 
             <div class="footer">
-                <p>STUDY POINT COACHING CENTRE &copy; 2024 | DEMO VERSION</p>
+                <p>STUDY POINT COACHING CENTRE &copy; 2024 | Online Test Platform</p>
             </div>
         </div>
     </div>
@@ -1144,11 +1264,16 @@
         <div class="container">
             <div class="coaching-header">
                 <h1>STUDY POINT COACHING CENTRE</h1>
-                <p>Muzaffarpur, Bihar</p>
+                <div class="subtitle">मुजफ्फरपुर, बिहार</div>
+                <p>Excellence in Education Since 2015</p>
                 <div class="details">
                     <div class="detail-item">
                         <i class="fas fa-user-tie"></i>
-                        <span>DIRECTOR: GUDDU KUMAR (B.Sc, B.Ed CTET)</span>
+                        <span>DIRECTOR: GUDDU KUMAR</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>B.Sc, B.Ed (CTET)</span>
                     </div>
                     <div class="detail-item">
                         <i class="fas fa-phone"></i>
@@ -1265,7 +1390,7 @@
                 <div class="coaching-info">
                     <div class="coaching-name">STUDY POINT COACHING CENTRE</div>
                     <div class="coaching-location">
-                        Muzaffarpur, Bihar
+                        मुजफ्फरपुर, बिहार | Excellence in Education Since 2015
                     </div>
                     <div class="coaching-details">
                         <div class="coaching-detail director-info">
@@ -1364,7 +1489,28 @@
         </div>
     </div>
 
+    <!-- Submission Overlay -->
+    <div id="submission-overlay" class="submission-overlay" style="display: none;">
+        <div class="submission-content">
+            <div class="submission-spinner">
+                <i class="fas fa-spinner"></i>
+            </div>
+            <div class="submission-text">Submitting Test...</div>
+            <div class="submission-subtext">Please wait while we process your test and generate results</div>
+        </div>
+    </div>
+
     <script>
+        // ===== FIREBASE CONFIGURATION =====
+        const firebaseConfig = {
+            apiKey: "AIzaSyBDN5ATO_LQ-3THveZDGyvLjtjjavgTIJk",
+            authDomain: "study-point-coaching-centre.firebaseapp.com",
+            projectId: "study-point-coaching-centre",
+            storageBucket: "study-point-coaching-centre.firebasestorage.app",
+            messagingSenderId: "1044456595909",
+            appId: "1:1044456595909:web:ca77701e20483dc640abac"
+        };
+
         // ===== GLOBAL VARIABLES =====
         let currentPage = 'test-list';
         let tests = [];
@@ -1376,93 +1522,65 @@
         let timeRemaining = 0;
         let studentDetails = {};
         let resultId = '';
+        let db = null;
+        let currentResultData = null;
+        let isSubmitting = false; // Flag to prevent multiple submissions
 
-        // ===== DEMO TESTS DATA =====
-        // Bihar Board Science - Hindi Medium
-        const demoTests = [
-            {
-                id: 'test-1',
-                testName: 'Science - Chapter 1: Chemical Reactions (रासायनिक अभिक्रियाएं)',
-                totalQuestions: 5,
-                totalMarks: 25,
-                duration: 15, // minutes
-                questionsText: `Q1. निम्नलिखित में से कौन-सा भौतिक परिवर्तन है?
-A) लोहे पर जंग लगना
-B) दूध से दही बनना
-C) काँच का टूटना
-D) खाद्य पदार्थ का पाचन
-Answer: C
-
-Q2. निम्नलिखित में से कौन सी ऊष्माक्षेपी अभिक्रिया है?
-A) श्वसन
-B) प्रकाश संश्लेषण
-C) बर्फ का पिघलना
-D) अमोनियम क्लोराइड का जल में घुलना
-Answer: A
-
-Q3. सोडियम धातु जल के साथ अभिक्रिया करके क्या बनाती है?
-A) सोडियम हाइड्रॉक्साइड और हाइड्रोजन गैस
-B) सोडियम क्लोराइड और ऑक्सीजन
-C) सोडियम कार्बोनेट और कार्बन डाइऑक्साइड
-D) सोडियम सल्फेट और सल्फर डाइऑक्साइड
-Answer: A
-
-Q4. लोहे पर जंग लगना किस प्रकार की अभिक्रिया है?
-A) संयोजन अभिक्रिया
-B) ऑक्सीकरण अभिक्रिया
-C) उदासीनीकरण अभिक्रिया
-D) अपघटन अभिक्रिया
-Answer: B
-
-Q5. निम्नलिखित में से कौन सा रेडॉक्स अभिक्रिया का उदाहरण है?
-A) सोडियम क्लोराइड का जल में घुलना
-B) कैल्सियम ऑक्साइड का जल के साथ अभिक्रिया
-C) लोहे का जंग लगना
-D) हाइड्रोक्लोरिक अम्ल और सोडियम हाइड्रॉक्साइड की अभिक्रिया
-Answer: C`
-            },
-            {
-                id: 'test-2',
-                testName: 'Science - Chapter 2: Acids, Bases and Salts (अम्ल, क्षारक एवं लवण)',
-                totalQuestions: 5,
-                totalMarks: 25,
-                duration: 15, // minutes
-                questionsText: `Q1. निम्नलिखित में से कौन सा प्राकृतिक अम्ल है?
-A) हाइड्रोक्लोरिक अम्ल
-B) सल्फ्यूरिक अम्ल
-C) साइट्रिक अम्ल
-D) नाइट्रिक अम्ल
-Answer: C
-
-Q2. pH पैमाने पर किसी उदासीन विलयन का pH मान क्या होता है?
-A) 0
-B) 7
-C) 14
-D) 10
-Answer: B
-
-Q3. अम्ल और क्षारक की अभिक्रिया से क्या बनता है?
-A) लवण और जल
-B) अम्ल और गैस
-C) क्षारक और गैस
-D) केवल जल
-Answer: A
-
-Q4. निम्नलिखित में से कौन सा अम्लीय लवण है?
-A) सोडियम क्लोराइड
-B) पोटैशियम सल्फेट
-C) सोडियम हाइड्रोजन कार्बोनेट
-D) कैल्सियम कार्बोनेट
-Answer: C
-
-Q5. फिनॉल्फथेलिन सूचक क्षारीय माध्यम में किस रंग का हो जाता है?
-A) नीला
-B) लाल
-C) गुलाबी
-D) पीला
-Answer: C`
+        // ===== FIREBASE INITIALIZATION =====
+        function initializeFirebase() {
+            try {
+                // Initialize Firebase
+                firebase.initializeApp(firebaseConfig);
+                db = firebase.firestore();
+                console.log("Firebase initialized successfully");
+                return true;
+            } catch (error) {
+                console.error("Firebase initialization error:", error);
+                showError("Failed to initialize Firebase. Please check your configuration.");
+                return false;
             }
-        ];
+        }
+
+        // ===== LOAD TESTS FROM FIREBASE =====
+        async function loadTestsFromFirebase() {
+            if (!db) {
+                showError("Database not initialized");
+                return;
+            }
+
+            try {
+                const loadingDiv = document.getElementById('loading-tests');
+                loadingDiv.style.display = 'block';
+                
+                // Get all tests from 'tests' collection
+                const querySnapshot = await db.collection('tests').get();
+                
+                tests = [];
+                querySnapshot.forEach(doc => {
+                    const testData = doc.data();
+                    // Add document ID to test data
+                    tests.push({
+                        id: doc.id,
+                        ...testData
+                    });
+                });
+                
+                console.log("Loaded tests from Firebase:", tests.length);
+                
+                if (tests.length === 0) {
+                    loadingDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> No tests available in Firebase';
+                    return;
+                }
+                
+                loadingDiv.style.display = 'none';
+                displayTests();
+                
+            } catch (error) {
+                console.error("Error loading tests from Firebase:", error);
+                document.getElementById('loading-tests').innerHTML = 
+                    '<i class="fas fa-exclamation-circle"></i> Error loading tests. Please try again later.';
+            }
+        }
 
         // ===== PAGE NAVIGATION FUNCTIONS =====
         function showPage(pageId) {
@@ -1480,11 +1598,6 @@ Answer: C`
         }
 
         // ===== PAGE 1: TEST LIST =====
-        function loadTests() {
-            tests = demoTests;
-            displayTests();
-        }
-
         function displayTests() {
             const container = document.getElementById('tests-container');
             
@@ -1581,15 +1694,24 @@ Answer: C`
 
         // ===== PAGE 3: TEST SCREEN =====
         function loadTestQuestions() {
-            if (!currentTest || !currentTest.questionsText) {
-                alert('Test questions not found!');
+            if (!currentTest) {
+                alert('Test not found!');
                 showPage('test-list');
                 return;
             }
             
             try {
-                // Parse questions from the questionsText field
-                currentQuestions = parseQuestions(currentTest.questionsText);
+                // Parse questions from the test data
+                // Assuming questions are stored in Firebase as an array of objects
+                // Each question object should have: text, options (array), correctAnswer
+                if (currentTest.questions && Array.isArray(currentTest.questions)) {
+                    currentQuestions = currentTest.questions;
+                } else if (currentTest.questionsText) {
+                    // Fallback to parsing from text format
+                    currentQuestions = parseQuestions(currentTest.questionsText);
+                } else {
+                    throw new Error('No questions found in test data');
+                }
                 
                 // Display test info
                 document.getElementById('current-test-name').textContent = currentTest.testName;
@@ -1709,7 +1831,24 @@ Answer: C`
             optionsContainer.innerHTML = '';
             
             const optionLabels = ['A', 'B', 'C', 'D'];
-            question.options.forEach((option, i) => {
+            
+            // Handle both array and object formats for options
+            let optionsArray = [];
+            if (Array.isArray(question.options)) {
+                optionsArray = question.options;
+            } else if (typeof question.options === 'object') {
+                // Convert object to array
+                optionsArray = [
+                    question.options.A || '',
+                    question.options.B || '',
+                    question.options.C || '',
+                    question.options.D || ''
+                ];
+            }
+            
+            optionsArray.forEach((option, i) => {
+                if (!option) return; // Skip empty options
+                
                 const optionId = `option-${index}-${i}`;
                 const isSelected = studentAnswers[index] === optionLabels[i];
                 
@@ -1791,72 +1930,177 @@ Answer: C`
 
         // Complete test button - now in the same row
         document.getElementById('complete-test').addEventListener('click', function() {
+            if (isSubmitting) {
+                return; // Prevent multiple clicks
+            }
+            
             if (confirm('Are you sure you want to complete the test? You cannot go back once submitted.')) {
                 submitTest();
             }
         });
 
+        // ===== SHOW SUBMISSION OVERLAY =====
+        function showSubmissionOverlay() {
+            const overlay = document.getElementById('submission-overlay');
+            overlay.style.display = 'flex';
+            // Disable all buttons
+            document.getElementById('complete-test').disabled = true;
+            document.getElementById('prev-question').disabled = true;
+            document.getElementById('next-question').disabled = true;
+            isSubmitting = true;
+        }
+
+        // ===== HIDE SUBMISSION OVERLAY =====
+        function hideSubmissionOverlay() {
+            const overlay = document.getElementById('submission-overlay');
+            overlay.style.display = 'none';
+            isSubmitting = false;
+        }
+
+        // ===== SAVE RESULT TO FIREBASE =====
+        async function saveResultToFirebase(resultData) {
+            if (!db) {
+                console.error("Firestore not initialized");
+                return false;
+            }
+
+            try {
+                // Create a sanitized test name for collection name (replace spaces and special characters)
+                const sanitizedTestName = currentTest.testName
+                    .replace(/[^a-zA-Z0-9]/g, '_')
+                    .toLowerCase();
+                
+                // Create result data object
+                const resultToSave = {
+                    studentName: studentDetails.name,
+                    rollNumber: studentDetails.rollNumber,
+                    testId: currentTest.id,
+                    testName: currentTest.testName,
+                    totalQuestions: resultData.totalQuestions,
+                    attempted: resultData.attempted,
+                    correctAnswers: resultData.correct,
+                    wrongAnswers: resultData.wrong,
+                    totalMarks: resultData.totalMarks,
+                    marksObtained: parseFloat(resultData.marksObtained),
+                    percentage: parseFloat(resultData.percentage),
+                    division: resultData.division,
+                    studentAnswers: studentAnswers,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    resultId: resultId,
+                    coachingName: "Study Point Coaching Centre",
+                    date: new Date().toISOString().split('T')[0] // YYYY-MM-DD format
+                };
+
+                // Save to Firebase
+                // Structure: studypointresults -> testName -> results -> individual results
+                const docRef = await db.collection('studypointresults')
+                    .doc(sanitizedTestName)
+                    .collection('results')
+                    .add(resultToSave);
+
+                console.log("Result saved to Firebase with ID:", docRef.id);
+                return true;
+            } catch (error) {
+                console.error("Error saving result to Firebase:", error);
+                return false;
+            }
+        }
+
         // ===== TEST SUBMISSION & RESULT CALCULATION =====
         async function submitTest() {
+            // Prevent multiple submissions
+            if (isSubmitting) {
+                return;
+            }
+            
+            // Show submission overlay
+            showSubmissionOverlay();
+            
             // Clear timer
             if (timerInterval) {
                 clearInterval(timerInterval);
                 timerInterval = null;
             }
             
-            // Calculate results
-            const totalQuestions = currentQuestions.length;
-            let attempted = 0;
-            let correct = 0;
+            // Add a small delay to ensure overlay is visible
+            await new Promise(resolve => setTimeout(resolve, 500));
             
-            for (let i = 0; i < totalQuestions; i++) {
-                if (studentAnswers[i]) {
-                    attempted++;
-                    if (studentAnswers[i] === currentQuestions[i].correctAnswer) {
-                        correct++;
+            try {
+                // Calculate results
+                const totalQuestions = currentQuestions.length;
+                let attempted = 0;
+                let correct = 0;
+                
+                for (let i = 0; i < totalQuestions; i++) {
+                    if (studentAnswers[i]) {
+                        attempted++;
+                        if (studentAnswers[i] === currentQuestions[i].correctAnswer) {
+                            correct++;
+                        }
                     }
                 }
+                
+                const wrong = attempted - correct;
+                const totalMarks = currentTest.totalMarks || totalQuestions;
+                const marksPerQuestion = totalMarks / totalQuestions;
+                const marksObtained = correct * marksPerQuestion;
+                const percentage = (marksObtained / totalMarks) * 100;
+                
+                // Determine Division
+                let division = '';
+                let statusClass = '';
+                
+                if (percentage >= 60) {
+                    division = 'FIRST DIVISION';
+                    statusClass = 'first-division';
+                } else if (percentage >= 45) {
+                    division = 'SECOND DIVISION';
+                    statusClass = 'second-division';
+                } else if (percentage >= 33) {
+                    division = 'THIRD DIVISION';
+                    statusClass = 'third-division';
+                } else {
+                    division = 'FAIL';
+                    statusClass = 'fail-status';
+                }
+                
+                // Generate result ID
+                resultId = 'SPC' + Date.now() + Math.floor(Math.random() * 1000);
+                
+                // Prepare result data
+                currentResultData = {
+                    totalQuestions,
+                    attempted,
+                    correct,
+                    wrong,
+                    totalMarks,
+                    marksObtained: marksObtained.toFixed(2),
+                    percentage: percentage.toFixed(2),
+                    division,
+                    statusClass
+                };
+                
+                // Save result to Firebase
+                const saveSuccess = await saveResultToFirebase(currentResultData);
+                
+                // Small delay to show processing
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Hide overlay
+                hideSubmissionOverlay();
+                
+                if (!saveSuccess) {
+                    alert("Note: Result could not be saved to server, but you can still download your result.");
+                }
+                
+                // Display results
+                displayResults(currentResultData);
+                
+            } catch (error) {
+                console.error("Error submitting test:", error);
+                hideSubmissionOverlay();
+                alert("Error submitting test. Please try again.");
             }
-            
-            const wrong = attempted - correct;
-            const totalMarks = currentTest.totalMarks || totalQuestions;
-            const marksPerQuestion = totalMarks / totalQuestions;
-            const marksObtained = correct * marksPerQuestion;
-            const percentage = (marksObtained / totalMarks) * 100;
-            
-            // Determine Division
-            let division = '';
-            let statusClass = '';
-            
-            if (percentage >= 60) {
-                division = 'FIRST DIVISION';
-                statusClass = 'first-division';
-            } else if (percentage >= 45) {
-                division = 'SECOND DIVISION';
-                statusClass = 'second-division';
-            } else if (percentage >= 33) {
-                division = 'THIRD DIVISION';
-                statusClass = 'third-division';
-            } else {
-                division = 'FAIL';
-                statusClass = 'fail-status';
-            }
-            
-            // Generate result ID
-            resultId = 'RES' + Date.now() + Math.floor(Math.random() * 1000);
-            
-            // Display results
-            displayResults({
-                totalQuestions,
-                attempted,
-                correct,
-                wrong,
-                totalMarks,
-                marksObtained: marksObtained.toFixed(2),
-                percentage: percentage.toFixed(2),
-                division,
-                statusClass
-            });
         }
 
         function displayResults(results) {
@@ -1910,6 +2154,8 @@ Answer: C`
             currentQuestionIndex = 0;
             studentAnswers = {};
             studentDetails = {};
+            currentResultData = null;
+            isSubmitting = false;
             
             // Clear form
             document.getElementById('student-form').reset();
@@ -1944,7 +2190,7 @@ Answer: C`
                 clone.style.width = '700px';
                 clone.style.padding = '30px';
                 clone.style.fontSize = '14px';
-                clone.style.border = '2px solid #1976D2';
+                clone.style.border = '2px solid #1E88E5';
                 clone.style.borderRadius = '10px';
                 
                 // Add clone to body temporarily
@@ -2002,7 +2248,7 @@ Answer: C`
                 pdf.text(`Result ID: ${resultId} | Generated on: ${new Date().toLocaleDateString()}`, 105, 292, { align: 'center' });
                 
                 // Save the PDF
-                pdf.save(`Result_${studentDetails.rollNumber}_${resultId}.pdf`);
+                pdf.save(`StudyPoint_Result_${studentDetails.rollNumber}_${resultId}.pdf`);
                 
             } catch (error) {
                 console.error('Error generating PDF:', error);
@@ -2014,10 +2260,25 @@ Answer: C`
             }
         }
 
+        // ===== HELPER FUNCTIONS =====
+        function showError(message) {
+            const container = document.getElementById('tests-container');
+            if (container) {
+                container.innerHTML = `
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-circle"></i> ${message}
+                    </div>
+                `;
+            }
+        }
+
         // ===== INITIALIZE APP =====
         document.addEventListener('DOMContentLoaded', function() {
-            // Load tests on initial page load
-            loadTests();
+            // Initialize Firebase
+            if (initializeFirebase()) {
+                // Load tests from Firebase
+                loadTestsFromFirebase();
+            }
             
             // Set up keyboard navigation for test screen
             document.addEventListener('keydown', function(e) {
