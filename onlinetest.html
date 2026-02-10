@@ -51,7 +51,7 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 15px;
+            padding: 10px;
         }
 
         .page {
@@ -72,60 +72,67 @@
         .coaching-header {
             background: linear-gradient(to right, var(--primary-blue), var(--dark-blue));
             color: var(--white);
-            padding: 15px;
+            padding: 12px;
             border-radius: var(--border-radius);
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             box-shadow: var(--shadow);
             text-align: center;
         }
 
         .coaching-header h1 {
-            font-size: 1.6rem;
-            margin-bottom: 8px;
+            font-size: 1.4rem;
+            margin-bottom: 6px;
+            line-height: 1.3;
         }
 
         .coaching-header .subtitle {
-            font-size: 1rem;
-            margin-bottom: 10px;
+            font-size: 0.85rem;
+            margin-bottom: 8px;
             opacity: 0.9;
+        }
+
+        .coaching-header p {
+            font-size: 0.75rem;
+            margin-bottom: 8px;
         }
 
         .coaching-header .details {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 15px;
-            margin-top: 12px;
+            gap: 8px;
+            margin-top: 8px;
+            font-size: 0.75rem;
         }
 
         .coaching-header .detail-item {
             display: flex;
             align-items: center;
-            gap: 6px;
-            font-size: 0.9rem;
+            gap: 4px;
         }
 
         .coaching-header .detail-item i {
-            font-size: 1rem;
+            font-size: 0.85rem;
         }
 
         /* ===== CARDS ===== */
         .card {
             background-color: var(--white);
             border-radius: var(--border-radius);
-            padding: 20px;
-            margin-bottom: 20px;
+            padding: 15px;
+            margin-bottom: 15px;
             box-shadow: var(--shadow);
-            border-left: 5px solid var(--primary-blue);
+            border-left: 4px solid var(--primary-blue);
         }
 
         .test-card {
             transition: transform 0.3s ease;
             cursor: pointer;
+            position: relative;
         }
 
         .test-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-3px);
             border-left-color: var(--light-blue);
         }
 
@@ -134,11 +141,11 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 10px 15px;
+            padding: 8px 12px;
             border-radius: 6px;
             border: none;
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             cursor: pointer;
             transition: all 0.3s ease;
             text-align: center;
@@ -199,64 +206,89 @@
         }
 
         .btn-small {
-            padding: 8px 12px;
-            font-size: 0.85rem;
+            padding: 6px 10px;
+            font-size: 0.8rem;
         }
 
         /* ===== TEST LIST ===== */
         .tests-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
+            gap: 12px;
+            margin-top: 12px;
         }
 
         .test-title {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             color: var(--primary-blue);
-            margin-bottom: 10px;
-            padding-bottom: 8px;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
             border-bottom: 1px solid var(--medium-gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .test-title-text {
+            flex: 1;
+        }
+
+        .new-badge {
+            background-color: var(--primary-red);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-left: 8px;
+            animation: blink 1.5s infinite;
+            display: inline-block;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
 
         .test-details {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 15px;
+            gap: 10px;
+            margin-bottom: 12px;
         }
 
         .test-detail {
             display: flex;
             align-items: center;
-            gap: 6px;
-            font-size: 0.85rem;
+            gap: 5px;
+            font-size: 0.8rem;
             color: var(--dark-gray);
         }
 
         .test-detail i {
             color: var(--primary-blue);
+            font-size: 0.85rem;
         }
 
         /* ===== FORM STYLES ===== */
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
         .form-label {
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 5px;
             font-weight: 600;
             color: var(--dark-gray);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .form-control {
             width: 100%;
-            padding: 10px 12px;
+            padding: 8px 10px;
             border: 1px solid var(--medium-gray);
             border-radius: 6px;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             transition: border 0.3s ease;
         }
 
@@ -269,31 +301,31 @@
             appearance: none;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='%231E88E5' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
-            background-position: right 12px center;
-            background-size: 14px;
-            padding-right: 35px;
+            background-position: right 10px center;
+            background-size: 12px;
+            padding-right: 30px;
         }
 
         /* ===== TEST SCREEN ===== */
         .test-header {
             background-color: var(--white);
-            padding: 12px 15px;
+            padding: 10px 12px;
             border-radius: var(--border-radius);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             box-shadow: var(--shadow);
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
             align-items: center;
         }
 
         .test-info {
             flex: 1;
-            min-width: 200px;
+            min-width: 180px;
         }
 
         .test-name {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: var(--primary-blue);
             font-weight: 600;
             margin-bottom: 4px;
@@ -302,17 +334,17 @@
 
         .student-info {
             color: var(--dark-gray);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .timer-container {
             background-color: var(--light-red);
             color: var(--white);
-            padding: 6px 12px;
+            padding: 5px 10px;
             border-radius: 6px;
             font-weight: bold;
-            font-size: 1rem;
-            min-width: 85px;
+            font-size: 0.9rem;
+            min-width: 75px;
             text-align: center;
             flex-shrink: 0;
         }
@@ -331,54 +363,54 @@
         /* ===== QUESTION NAVIGATION DROPDOWN ===== */
         .question-navigation {
             background-color: var(--white);
-            padding: 12px 15px;
+            padding: 10px 12px;
             border-radius: var(--border-radius);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             box-shadow: var(--shadow);
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 10px;
             align-items: center;
         }
 
         .jump-to-container {
             flex: 1;
-            min-width: 180px;
+            min-width: 160px;
         }
 
         .jump-to-label {
             font-weight: 600;
-            margin-bottom: 6px;
+            margin-bottom: 5px;
             color: var(--dark-gray);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
 
         .jump-select {
             width: 100%;
-            padding: 8px 12px;
+            padding: 7px 10px;
             border: 1px solid var(--medium-gray);
             border-radius: 6px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             background-color: var(--white);
         }
 
         .question-status {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
         }
 
         .status-item {
             display: flex;
             align-items: center;
-            gap: 5px;
-            font-size: 0.8rem;
+            gap: 4px;
+            font-size: 0.75rem;
             color: var(--dark-gray);
         }
 
         .status-dot {
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             flex-shrink: 0;
         }
@@ -395,38 +427,38 @@
         .question-container {
             background-color: var(--white);
             border-radius: var(--border-radius);
-            padding: 18px;
-            margin-bottom: 12px;
+            padding: 15px;
+            margin-bottom: 10px;
             box-shadow: var(--shadow);
-            min-height: 280px;
+            min-height: 250px;
             display: flex;
             flex-direction: column;
         }
 
         .question-number {
-            font-size: 1rem;
+            font-size: 0.95rem;
             color: var(--primary-blue);
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             font-weight: 600;
         }
 
         .question-text {
-            font-size: 1.1rem;
-            margin-bottom: 18px;
-            line-height: 1.5;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            line-height: 1.4;
             flex: 1;
         }
 
         .options-container {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
         }
 
         .option {
             display: flex;
             align-items: center;
-            padding: 10px 12px;
+            padding: 8px 10px;
             border: 1px solid var(--medium-gray);
             border-radius: 6px;
             cursor: pointer;
@@ -444,32 +476,33 @@
         }
 
         .option input {
-            margin-right: 10px;
-            transform: scale(1.1);
+            margin-right: 8px;
+            transform: scale(1.05);
             flex-shrink: 0;
         }
 
         .option-label {
             font-weight: 600;
-            margin-right: 8px;
+            margin-right: 6px;
             color: var(--primary-blue);
-            min-width: 18px;
+            min-width: 16px;
             flex-shrink: 0;
         }
 
         .option-text {
             flex: 1;
             word-break: break-word;
+            font-size: 0.9rem;
         }
 
         /* ===== TEST NAVIGATION BUTTONS - SINGLE ROW ===== */
         .test-navigation-row {
             display: flex;
             justify-content: space-between;
-            gap: 8px;
-            margin-top: 15px;
+            gap: 6px;
+            margin-top: 12px;
             background-color: var(--white);
-            padding: 12px;
+            padding: 10px;
             border-radius: var(--border-radius);
             box-shadow: var(--shadow);
         }
@@ -477,13 +510,13 @@
         .nav-btn {
             flex: 1;
             min-width: 0;
-            padding: 10px 8px;
-            font-size: 0.85rem;
+            padding: 8px 6px;
+            font-size: 0.8rem;
             position: relative;
         }
 
         .nav-btn i {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .nav-btn:disabled {
@@ -503,12 +536,12 @@
 
         .question-progress {
             text-align: center;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             color: var(--dark-gray);
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             background-color: var(--white);
-            padding: 8px 12px;
+            padding: 6px 10px;
             border-radius: var(--border-radius);
             box-shadow: var(--shadow);
         }
@@ -524,7 +557,7 @@
         .result-container {
             max-width: 800px;
             margin: 0 auto;
-            padding: 10px;
+            padding: 8px;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
@@ -533,9 +566,9 @@
         .result-top-actions {
             display: flex;
             justify-content: center;
-            gap: 12px;
-            margin-bottom: 15px;
-            padding: 10px;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding: 8px;
             flex-wrap: wrap;
         }
 
@@ -543,34 +576,34 @@
             background-color: white;
             border: 2px solid var(--primary-blue);
             border-radius: 10px;
-            padding: 18px;
-            margin: 0 auto 15px;
+            padding: 15px;
+            margin: 0 auto 12px;
             width: 100%;
             max-width: 680px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.08);
+            box-shadow: 0 0 12px rgba(0,0,0,0.06);
             flex: 1;
         }
 
         .coaching-info {
             text-align: center;
-            margin-bottom: 18px;
-            border-bottom: 3px solid var(--primary-blue);
-            padding-bottom: 12px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--primary-blue);
+            padding-bottom: 10px;
         }
 
         .coaching-name {
             color: var(--primary-blue);
-            font-size: 1.6rem;
-            margin-bottom: 6px;
-            font-weight: 800;
+            font-size: 1.4rem;
+            margin-bottom: 4px;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
         }
 
         .coaching-location {
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             color: var(--dark-gray);
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             font-weight: 600;
         }
 
@@ -578,32 +611,33 @@
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
-            gap: 12px;
-            margin-top: 8px;
-            font-size: 0.85rem;
+            gap: 10px;
+            margin-top: 6px;
+            font-size: 0.8rem;
             color: var(--dark-gray);
         }
 
         .coaching-detail {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
         }
 
         .director-info {
             background-color: rgba(30, 136, 229, 0.1);
-            padding: 8px 10px;
-            border-radius: 5px;
-            margin-top: 8px;
+            padding: 6px 8px;
+            border-radius: 4px;
+            margin-top: 6px;
             font-weight: 600;
+            font-size: 0.8rem;
         }
 
         .result-title {
             text-align: center;
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             color: var(--primary-red);
-            margin-bottom: 18px;
-            padding: 8px;
+            margin-bottom: 15px;
+            padding: 6px;
             background-color: rgba(211, 47, 47, 0.1);
             border-radius: 5px;
         }
@@ -611,18 +645,18 @@
         .student-info-result {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 18px;
+            gap: 8px;
+            margin-bottom: 15px;
             background-color: var(--light-gray);
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 0.85rem;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
         }
 
         .student-info-item {
             display: flex;
             justify-content: space-between;
-            padding: 5px 0;
+            padding: 4px 0;
             border-bottom: 1px dashed var(--medium-gray);
         }
 
@@ -633,24 +667,24 @@
         .result-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 18px;
+            margin-bottom: 15px;
             background-color: var(--white);
-            border-radius: 8px;
+            border-radius: 6px;
             overflow: hidden;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.08);
-            font-size: 0.85rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+            font-size: 0.8rem;
         }
 
         .result-table th {
             background-color: var(--primary-blue);
             color: var(--white);
-            padding: 10px;
+            padding: 8px;
             text-align: left;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
         }
 
         .result-table td {
-            padding: 10px;
+            padding: 8px;
             border-bottom: 1px solid var(--medium-gray);
         }
 
@@ -670,12 +704,12 @@
 
         .result-status {
             text-align: center;
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             font-weight: bold;
-            padding: 12px;
-            margin: 12px 0;
-            border-radius: 8px;
-            min-height: 55px;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 6px;
+            min-height: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -684,76 +718,76 @@
         .first-division {
             background-color: rgba(30, 136, 229, 0.2);
             color: var(--primary-blue);
-            border: 3px solid var(--primary-blue);
+            border: 2px solid var(--primary-blue);
         }
 
         .second-division {
             background-color: rgba(255, 193, 7, 0.2);
             color: #FF8F00;
-            border: 3px solid #FF8F00;
+            border: 2px solid #FF8F00;
         }
 
         .third-division {
             background-color: rgba(33, 150, 243, 0.2);
             color: #1976D2;
-            border: 3px solid #1976D2;
+            border: 2px solid #1976D2;
         }
 
         .fail-status {
             background-color: rgba(211, 47, 47, 0.15);
             color: var(--primary-red);
-            border: 3px solid var(--primary-red);
+            border: 2px solid var(--primary-red);
         }
 
         .result-actions {
             display: flex;
             justify-content: center;
-            gap: 10px;
-            padding-top: 15px;
-            border-top: 2px solid var(--medium-gray);
+            gap: 8px;
+            padding-top: 12px;
+            border-top: 1px solid var(--medium-gray);
             flex-wrap: wrap;
         }
 
         .result-footer {
             text-align: center;
-            margin-top: 15px;
-            padding: 12px;
+            margin-top: 12px;
+            padding: 10px;
             color: var(--dark-gray);
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             border-top: 1px solid var(--medium-gray);
         }
 
         /* ===== LOADING & MESSAGES ===== */
         .loading {
             text-align: center;
-            padding: 30px;
-            font-size: 1.1rem;
+            padding: 20px;
+            font-size: 0.95rem;
             color: var(--dark-gray);
         }
 
         .loading i {
             color: var(--primary-blue);
-            margin-right: 8px;
+            margin-right: 6px;
         }
 
         .error-message {
             background-color: rgba(211, 47, 47, 0.1);
             color: var(--primary-red);
-            padding: 12px;
+            padding: 10px;
             border-radius: var(--border-radius);
-            margin: 15px 0;
+            margin: 12px 0;
             text-align: center;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .success-message {
             background-color: rgba(30, 136, 229, 0.1);
             color: var(--primary-blue);
-            padding: 12px;
+            padding: 10px;
             border-radius: var(--border-radius);
-            margin: 15px 0;
+            margin: 12px 0;
             text-align: center;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         /* ===== SUBMISSION OVERLAY ===== */
@@ -769,45 +803,45 @@
             align-items: center;
             z-index: 9999;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
         }
 
         .submission-content {
             background-color: var(--white);
-            padding: 30px;
+            padding: 20px;
             border-radius: var(--border-radius);
             text-align: center;
-            max-width: 400px;
+            max-width: 350px;
             width: 90%;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
         }
 
         .submission-spinner {
-            font-size: 3rem;
+            font-size: 2.5rem;
             color: var(--primary-blue);
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             animation: spin 1.5s linear infinite;
         }
 
         .submission-text {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: var(--text-color);
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             font-weight: 600;
         }
 
         .submission-subtext {
             color: var(--dark-gray);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         /* ===== FOOTER ===== */
         .footer {
             text-align: center;
-            margin-top: 30px;
-            padding: 15px;
+            margin-top: 20px;
+            padding: 12px;
             color: var(--dark-gray);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             border-top: 1px solid var(--medium-gray);
         }
 
@@ -850,116 +884,139 @@
         /* ===== MOBILE RESPONSIVENESS ===== */
         @media (max-width: 768px) {
             .container {
-                padding: 12px;
+                padding: 8px;
             }
             
             .coaching-header {
-                padding: 12px;
-                margin-bottom: 15px;
+                padding: 10px;
+                margin-bottom: 12px;
             }
             
             .coaching-header h1 {
-                font-size: 1.4rem;
+                font-size: 1.2rem;
+            }
+            
+            .coaching-header .subtitle {
+                font-size: 0.8rem;
+                margin-bottom: 6px;
+            }
+            
+            .coaching-header p {
+                font-size: 0.7rem;
             }
             
             .coaching-header .details {
+                font-size: 0.7rem;
+                gap: 6px;
                 flex-direction: column;
-                gap: 8px;
                 align-items: center;
+            }
+            
+            .coaching-header .detail-item {
+                gap: 3px;
             }
 
             .tests-grid {
                 grid-template-columns: 1fr;
-                gap: 12px;
-                margin-top: 12px;
+                gap: 10px;
+                margin-top: 10px;
+            }
+            
+            .test-title {
+                font-size: 1.1rem;
+            }
+            
+            .new-badge {
+                font-size: 0.65rem;
+                padding: 2px 6px;
             }
 
             .test-header {
                 flex-direction: column;
                 align-items: stretch;
-                padding: 10px 12px;
-                margin-bottom: 10px;
+                padding: 8px 10px;
+                margin-bottom: 8px;
             }
 
             .timer-container {
                 align-self: center;
-                min-width: 80px;
-                padding: 6px 10px;
-                font-size: 0.95rem;
+                min-width: 70px;
+                padding: 5px 8px;
+                font-size: 0.85rem;
             }
 
             .student-info-result {
                 grid-template-columns: 1fr;
-                gap: 6px;
-                padding: 10px;
-                font-size: 0.82rem;
+                gap: 5px;
+                padding: 8px;
+                font-size: 0.78rem;
             }
             
             .coaching-name {
-                font-size: 1.4rem;
+                font-size: 1.2rem;
             }
             
             .coaching-location {
-                font-size: 0.85rem;
-                margin-bottom: 10px;
+                font-size: 0.8rem;
+                margin-bottom: 8px;
             }
             
             .coaching-details {
                 flex-direction: column;
-                gap: 8px;
+                gap: 6px;
                 align-items: center;
-                font-size: 0.8rem;
+                font-size: 0.75rem;
             }
             
             .director-info {
-                font-size: 0.8rem;
-                padding: 6px 8px;
+                font-size: 0.75rem;
+                padding: 5px 6px;
             }
             
             .result-print-area {
-                padding: 15px;
+                padding: 12px;
                 border-width: 1px;
-                margin-bottom: 12px;
+                margin-bottom: 10px;
             }
             
             .result-table th,
             .result-table td {
-                padding: 8px 6px;
-                font-size: 0.82rem;
+                padding: 6px;
+                font-size: 0.78rem;
             }
             
             .result-top-actions,
             .result-actions {
                 flex-direction: column;
                 align-items: center;
-                gap: 8px;
+                gap: 6px;
             }
             
             .result-top-actions .btn,
             .result-actions .btn {
                 width: 100%;
-                max-width: 280px;
-                padding: 10px 12px;
+                max-width: 250px;
+                padding: 8px 10px;
             }
             
             .result-status {
-                font-size: 1.2rem;
-                padding: 10px;
-                margin: 10px 0;
-                min-height: 48px;
+                font-size: 1.1rem;
+                padding: 8px;
+                margin: 8px 0;
+                min-height: 45px;
             }
             
             .result-container {
-                padding: 8px;
+                padding: 6px;
                 justify-content: flex-start;
             }
             
             .question-navigation {
                 flex-direction: column;
                 align-items: stretch;
-                gap: 10px;
-                padding: 10px 12px;
-                margin-bottom: 10px;
+                gap: 8px;
+                padding: 8px 10px;
+                margin-bottom: 8px;
             }
             
             .question-status {
@@ -967,117 +1024,18 @@
             }
             
             .test-navigation-row {
-                padding: 10px;
-                gap: 6px;
-                margin-top: 12px;
-            }
-            
-            .nav-btn {
-                padding: 8px 6px;
-                font-size: 0.8rem;
-            }
-            
-            .nav-btn i {
-                font-size: 0.85rem;
-            }
-            
-            .submission-content {
-                padding: 20px;
-                max-width: 300px;
-            }
-            
-            .submission-spinner {
-                font-size: 2.5rem;
-            }
-            
-            .submission-text {
-                font-size: 1.1rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 10px;
-            }
-
-            .card {
-                padding: 15px;
-                margin-bottom: 15px;
-            }
-
-            .coaching-header h1 {
-                font-size: 1.3rem;
-            }
-
-            .test-name {
-                font-size: 1.1rem;
-            }
-            
-            .coaching-name {
-                font-size: 1.3rem;
-            }
-            
-            .coaching-location {
-                font-size: 0.8rem;
-            }
-            
-            .coaching-details {
-                font-size: 0.75rem;
-            }
-            
-            .result-title {
-                font-size: 1.2rem;
-                margin-bottom: 15px;
-                padding: 6px;
-            }
-            
-            .result-print-area {
-                padding: 12px;
-                border: 1px solid var(--primary-blue);
-                box-shadow: 0 0 8px rgba(0,0,0,0.05);
-            }
-            
-            .result-table {
-                font-size: 0.8rem;
-            }
-            
-            .student-info-result {
-                font-size: 0.8rem;
-            }
-            
-            .question-text {
-                font-size: 1.05rem;
-                margin-bottom: 15px;
-            }
-            
-            .option {
-                padding: 8px 10px;
-                font-size: 0.9rem;
-            }
-            
-            .question-container {
-                padding: 15px;
-                min-height: 260px;
-                margin-bottom: 10px;
-            }
-            
-            .test-navigation-row {
                 padding: 8px;
-                gap: 4px;
+                gap: 5px;
+                margin-top: 10px;
             }
             
             .nav-btn {
-                padding: 8px 4px;
+                padding: 7px 5px;
                 font-size: 0.75rem;
             }
             
             .nav-btn i {
                 font-size: 0.8rem;
-            }
-            
-            .btn {
-                padding: 8px 10px;
-                font-size: 0.85rem;
             }
             
             .submission-content {
@@ -1087,49 +1045,78 @@
             
             .submission-spinner {
                 font-size: 2rem;
-                margin-bottom: 10px;
             }
             
             .submission-text {
                 font-size: 1rem;
             }
-            
-            .submission-subtext {
-                font-size: 0.8rem;
-            }
         }
-        
-        /* Extra small mobile devices (iPhone SE etc) */
-        @media (max-width: 375px) {
-            .test-header {
-                padding: 8px 10px;
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 6px;
+            }
+
+            .card {
+                padding: 12px;
+                margin-bottom: 12px;
+            }
+
+            .coaching-header h1 {
+                font-size: 1.1rem;
             }
             
+            .coaching-header .subtitle {
+                font-size: 0.75rem;
+            }
+            
+            .coaching-header p {
+                font-size: 0.65rem;
+            }
+            
+            .coaching-header .details {
+                font-size: 0.65rem;
+            }
+
             .test-name {
                 font-size: 1rem;
             }
             
-            .student-info {
-                font-size: 0.85rem;
+            .coaching-name {
+                font-size: 1.1rem;
             }
             
-            .timer-container {
-                min-width: 70px;
-                padding: 5px 8px;
-                font-size: 0.9rem;
+            .coaching-location {
+                font-size: 0.75rem;
             }
             
-            .question-navigation {
-                padding: 8px 10px;
+            .coaching-details {
+                font-size: 0.7rem;
             }
             
-            .jump-select {
-                padding: 7px 10px;
-                font-size: 0.85rem;
+            .result-title {
+                font-size: 1.1rem;
+                margin-bottom: 12px;
+                padding: 5px;
+            }
+            
+            .result-print-area {
+                padding: 10px;
+                border: 1px solid var(--primary-blue);
+                box-shadow: 0 0 6px rgba(0,0,0,0.04);
+            }
+            
+            .result-table {
+                font-size: 0.75rem;
+            }
+            
+            .student-info-result {
+                font-size: 0.75rem;
             }
             
             .question-text {
-                font-size: 1rem;
+                font-size: 0.95rem;
+                margin-bottom: 12px;
             }
             
             .option {
@@ -1137,12 +1124,19 @@
                 font-size: 0.85rem;
             }
             
+            .question-container {
+                padding: 12px;
+                min-height: 230px;
+                margin-bottom: 8px;
+            }
+            
             .test-navigation-row {
-                padding: 8px 6px;
+                padding: 7px;
+                gap: 4px;
             }
             
             .nav-btn {
-                padding: 7px 3px;
+                padding: 7px 4px;
                 font-size: 0.7rem;
             }
             
@@ -1150,53 +1144,128 @@
                 font-size: 0.75rem;
             }
             
-            .btn-small {
+            .btn {
+                padding: 7px 9px;
+                font-size: 0.8rem;
+            }
+            
+            .submission-content {
+                padding: 12px;
+                max-width: 260px;
+            }
+            
+            .submission-spinner {
+                font-size: 1.8rem;
+                margin-bottom: 8px;
+            }
+            
+            .submission-text {
+                font-size: 0.95rem;
+            }
+            
+            .submission-subtext {
+                font-size: 0.75rem;
+            }
+        }
+        
+        /* Extra small mobile devices (iPhone SE etc) */
+        @media (max-width: 375px) {
+            .test-header {
+                padding: 7px 9px;
+            }
+            
+            .test-name {
+                font-size: 0.95rem;
+            }
+            
+            .student-info {
+                font-size: 0.8rem;
+            }
+            
+            .timer-container {
+                min-width: 65px;
+                padding: 4px 7px;
+                font-size: 0.8rem;
+            }
+            
+            .question-navigation {
+                padding: 7px 9px;
+            }
+            
+            .jump-select {
+                padding: 6px 9px;
+                font-size: 0.8rem;
+            }
+            
+            .question-text {
+                font-size: 0.9rem;
+            }
+            
+            .option {
                 padding: 6px 8px;
                 font-size: 0.8rem;
+            }
+            
+            .test-navigation-row {
+                padding: 6px;
+            }
+            
+            .nav-btn {
+                padding: 6px 3px;
+                font-size: 0.65rem;
+            }
+            
+            .nav-btn i {
+                font-size: 0.7rem;
+            }
+            
+            .btn-small {
+                padding: 5px 7px;
+                font-size: 0.75rem;
             }
         }
         
         /* Height-based adjustments for mobile */
         @media (max-height: 700px) and (max-width: 768px) {
             .test-header {
-                padding: 8px 10px;
-                margin-bottom: 8px;
+                padding: 7px 9px;
+                margin-bottom: 6px;
             }
             
             .question-navigation {
-                padding: 8px 10px;
-                margin-bottom: 8px;
+                padding: 7px 9px;
+                margin-bottom: 6px;
             }
             
             .question-container {
-                padding: 12px;
-                min-height: 220px;
-                margin-bottom: 8px;
+                padding: 10px;
+                min-height: 200px;
+                margin-bottom: 6px;
             }
             
             .question-text {
-                font-size: 1rem;
-                margin-bottom: 12px;
+                font-size: 0.9rem;
+                margin-bottom: 10px;
             }
             
             .options-container {
-                gap: 6px;
+                gap: 5px;
             }
             
             .option {
-                padding: 8px;
-                font-size: 0.9rem;
+                padding: 6px;
+                font-size: 0.85rem;
             }
             
             .test-navigation-row {
-                margin-top: 10px;
-                padding: 8px;
+                margin-top: 8px;
+                padding: 6px;
             }
             
             .question-progress {
-                padding: 6px 10px;
-                font-size: 0.85rem;
-                margin-bottom: 8px;
+                padding: 5px 8px;
+                font-size: 0.8rem;
+                margin-bottom: 6px;
             }
         }
         
@@ -1205,15 +1274,25 @@
             display: none;
         }
         
-        /* Compact card for mobile */
+        /* Force no scroll on test screen */
+        #page-test-screen .container {
+            padding-bottom: 5px;
+        }
+        
+        /* Small card adjustments */
         .compact-card {
             padding: 12px;
             margin-bottom: 12px;
         }
         
-        /* Force no scroll on test screen */
-        #page-test-screen .container {
-            padding-bottom: 5px;
+        .compact-card h2 {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+        }
+        
+        .compact-card p {
+            font-size: 0.9rem;
+            margin-bottom: 10px;
         }
     </style>
 </head>
@@ -1524,12 +1603,12 @@
         let resultId = '';
         let db = null;
         let currentResultData = null;
-        let isSubmitting = false; // Flag to prevent multiple submissions
+        let isSubmitting = false;
+        let takenTests = JSON.parse(localStorage.getItem('takenTests') || '[]');
 
         // ===== FIREBASE INITIALIZATION =====
         function initializeFirebase() {
             try {
-                // Initialize Firebase
                 firebase.initializeApp(firebaseConfig);
                 db = firebase.firestore();
                 console.log("Firebase initialized successfully");
@@ -1558,14 +1637,49 @@
                 tests = [];
                 querySnapshot.forEach(doc => {
                     const testData = doc.data();
-                    // Add document ID to test data
+                    // Check if test has been taken by this user
+                    const isTaken = takenTests.includes(doc.id);
+                    
+                    // Get timestamp - handle different formats
+                    let timestamp = Date.now();
+                    if (testData.createdAt) {
+                        // If createdAt is a Firestore timestamp
+                        if (testData.createdAt.toDate) {
+                            timestamp = testData.createdAt.toDate().getTime();
+                        } else if (testData.createdAt._seconds) {
+                            // If it's a Firestore timestamp object
+                            timestamp = testData.createdAt._seconds * 1000;
+                        } else if (typeof testData.createdAt === 'number') {
+                            timestamp = testData.createdAt;
+                        } else if (typeof testData.createdAt === 'string') {
+                            timestamp = new Date(testData.createdAt).getTime();
+                        }
+                    } else if (testData.timestamp) {
+                        // Handle timestamp field
+                        if (testData.timestamp.toDate) {
+                            timestamp = testData.timestamp.toDate().getTime();
+                        } else if (testData.timestamp._seconds) {
+                            timestamp = testData.timestamp._seconds * 1000;
+                        } else if (typeof testData.timestamp === 'number') {
+                            timestamp = testData.timestamp;
+                        } else if (typeof testData.timestamp === 'string') {
+                            timestamp = new Date(testData.timestamp).getTime();
+                        }
+                    }
+                    
+                    // Check if test is new (within 7 days)
+                    const isNew = !isTaken && isRecentTest(timestamp);
+                    
                     tests.push({
                         id: doc.id,
-                        ...testData
+                        ...testData,
+                        timestamp: timestamp,
+                        isTaken: isTaken,
+                        isNew: isNew
                     });
                 });
                 
-                console.log("Loaded tests from Firebase:", tests.length);
+                console.log("Loaded tests from Firebase:", tests);
                 
                 if (tests.length === 0) {
                     loadingDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> No tests available in Firebase';
@@ -1573,6 +1687,17 @@
                 }
                 
                 loadingDiv.style.display = 'none';
+                
+                // Sort tests: new tests first, then by timestamp (newest first)
+                tests.sort((a, b) => {
+                    // First, sort by isNew (new tests first)
+                    if (a.isNew && !b.isNew) return -1;
+                    if (!a.isNew && b.isNew) return 1;
+                    
+                    // Then sort by timestamp (newest first)
+                    return b.timestamp - a.timestamp;
+                });
+                
                 displayTests();
                 
             } catch (error) {
@@ -1582,18 +1707,21 @@
             }
         }
 
+        // Check if test is recent (within 7 days)
+        function isRecentTest(timestamp) {
+            const sevenDaysAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
+            return timestamp > sevenDaysAgo;
+        }
+
         // ===== PAGE NAVIGATION FUNCTIONS =====
         function showPage(pageId) {
-            // Hide all pages
             document.querySelectorAll('.page').forEach(page => {
                 page.classList.remove('active');
             });
             
-            // Show requested page
             document.getElementById(`page-${pageId}`).classList.add('active');
             currentPage = pageId;
             
-            // Scroll to top
             window.scrollTo(0, 0);
         }
 
@@ -1611,9 +1739,16 @@
                 return;
             }
             
-            container.innerHTML = tests.map(test => `
+            container.innerHTML = tests.map(test => {
+                // Debug info
+                console.log(`Test: ${test.testName}, isNew: ${test.isNew}, timestamp: ${test.timestamp}`);
+                
+                return `
                 <div class="card test-card" data-test-id="${test.id}">
-                    <h3 class="test-title">${test.testName || 'Unnamed Test'}</h3>
+                    <h3 class="test-title">
+                        <span class="test-title-text">${test.testName || 'Unnamed Test'}</span>
+                        ${test.isNew ? '<span class="new-badge">NEW</span>' : ''}
+                    </h3>
                     <div class="test-details">
                         <div class="test-detail">
                             <i class="fas fa-question-circle"></i>
@@ -1625,14 +1760,14 @@
                         </div>
                         <div class="test-detail">
                             <i class="fas fa-clock"></i>
-                            <span>${test.duration || 15} Minutes</span>
+                            <span>${test.duration || 15} Min</span>
                         </div>
                     </div>
                     <button class="btn btn-primary btn-block start-test" data-test-id="${test.id}">
-                        Start Test
+                        ${test.isTaken ? '<i class="fas fa-redo"></i> Retake Test' : 'Start Test'}
                     </button>
                 </div>
-            `).join('');
+            `}).join('');
             
             // Add event listeners to start test buttons
             document.querySelectorAll('.start-test').forEach(button => {
@@ -1650,7 +1785,7 @@
                 return;
             }
             
-            // Reset answers
+            // Reset answers for this test
             studentAnswers = {};
             currentQuestionIndex = 0;
             
@@ -1702,12 +1837,9 @@
             
             try {
                 // Parse questions from the test data
-                // Assuming questions are stored in Firebase as an array of objects
-                // Each question object should have: text, options (array), correctAnswer
                 if (currentTest.questions && Array.isArray(currentTest.questions)) {
                     currentQuestions = currentTest.questions;
                 } else if (currentTest.questionsText) {
-                    // Fallback to parsing from text format
                     currentQuestions = parseQuestions(currentTest.questionsText);
                 } else {
                     throw new Error('No questions found in test data');
@@ -1720,7 +1852,7 @@
                 
                 // Initialize timer
                 const duration = currentTest.duration || 15;
-                timeRemaining = duration * 60; // Convert to seconds
+                timeRemaining = duration * 60;
                 
                 // Start the timer
                 startTimer();
@@ -1749,7 +1881,6 @@
             for (let i = 0; i < lines.length; i++) {
                 const line = lines[i].trim();
                 
-                // Check if line starts a new question
                 if (line.match(/^Q\d+\./)) {
                     if (currentQuestion) {
                         questions.push(currentQuestion);
@@ -1761,26 +1892,22 @@
                         correctAnswer: ''
                     };
                 }
-                // Check for options (A), B), C), D))
                 else if (line.match(/^[A-D]\)/)) {
                     if (currentQuestion) {
                         const option = line.substring(2).trim();
                         currentQuestion.options.push(option);
                     }
                 }
-                // Check for answer line
                 else if (line.match(/^Answer:/i)) {
                     if (currentQuestion) {
                         currentQuestion.correctAnswer = line.replace(/^Answer:\s*/i, '').trim();
                     }
                 }
-                // Append to question text if it's a continuation
                 else if (line && currentQuestion && !currentQuestion.correctAnswer) {
                     currentQuestion.text += ' ' + line;
                 }
             }
             
-            // Add the last question
             if (currentQuestion) {
                 questions.push(currentQuestion);
             }
@@ -1799,7 +1926,6 @@
                 dropdown.appendChild(option);
             });
             
-            // Add event listener for dropdown change
             dropdown.addEventListener('change', function() {
                 const questionIndex = parseInt(this.value);
                 if (!isNaN(questionIndex)) {
@@ -1816,28 +1942,23 @@
             currentQuestionIndex = index;
             const question = currentQuestions[index];
             
-            // Update progress
             document.getElementById('question-progress').textContent = 
                 `Question ${index + 1} of ${currentQuestions.length}`;
             
             document.getElementById('question-number').textContent = `Question ${index + 1}`;
             document.getElementById('question-text').textContent = question.text;
             
-            // Update dropdown selection
             document.getElementById('jump-to-select').value = index;
             
-            // Display options
             const optionsContainer = document.getElementById('options-container');
             optionsContainer.innerHTML = '';
             
             const optionLabels = ['A', 'B', 'C', 'D'];
             
-            // Handle both array and object formats for options
             let optionsArray = [];
             if (Array.isArray(question.options)) {
                 optionsArray = question.options;
             } else if (typeof question.options === 'object') {
-                // Convert object to array
                 optionsArray = [
                     question.options.A || '',
                     question.options.B || '',
@@ -1847,7 +1968,7 @@
             }
             
             optionsArray.forEach((option, i) => {
-                if (!option) return; // Skip empty options
+                if (!option) return;
                 
                 const optionId = `option-${index}-${i}`;
                 const isSelected = studentAnswers[index] === optionLabels[i];
@@ -1861,7 +1982,6 @@
                     <span class="option-text">${option}</span>
                 `;
                 
-                // Add event listener
                 optionElement.addEventListener('click', function() {
                     selectOption(index, optionLabels[i]);
                 });
@@ -1869,38 +1989,33 @@
                 optionsContainer.appendChild(optionElement);
             });
             
-            // Update button states
             document.getElementById('prev-question').disabled = index === 0;
             document.getElementById('next-question').disabled = index === currentQuestions.length - 1;
         }
 
         function selectOption(questionIndex, option) {
             studentAnswers[questionIndex] = option;
-            showQuestion(questionIndex); // Refresh to show selection
+            showQuestion(questionIndex);
         }
 
         function startTimer() {
-            // Clear any existing timer
             if (timerInterval) {
                 clearInterval(timerInterval);
             }
             
             updateTimerDisplay();
             
-            // Start new timer
             timerInterval = setInterval(() => {
                 timeRemaining--;
                 updateTimerDisplay();
                 
-                // Check if time is up
                 if (timeRemaining <= 0) {
                     clearInterval(timerInterval);
                     submitTest();
                 }
                 
-                // Add warning class when less than 5 minutes remain
                 const timerElement = document.getElementById('timer');
-                if (timeRemaining <= 300) { // 5 minutes = 300 seconds
+                if (timeRemaining <= 300) {
                     timerElement.classList.add('timer-warning');
                 }
             }, 1000);
@@ -1915,7 +2030,7 @@
                 `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
         }
 
-        // Navigation buttons - now all in single row
+        // Navigation buttons
         document.getElementById('prev-question').addEventListener('click', function() {
             if (currentQuestionIndex > 0) {
                 showQuestion(currentQuestionIndex - 1);
@@ -1928,10 +2043,10 @@
             }
         });
 
-        // Complete test button - now in the same row
+        // Complete test button
         document.getElementById('complete-test').addEventListener('click', function() {
             if (isSubmitting) {
-                return; // Prevent multiple clicks
+                return;
             }
             
             if (confirm('Are you sure you want to complete the test? You cannot go back once submitted.')) {
@@ -1943,7 +2058,6 @@
         function showSubmissionOverlay() {
             const overlay = document.getElementById('submission-overlay');
             overlay.style.display = 'flex';
-            // Disable all buttons
             document.getElementById('complete-test').disabled = true;
             document.getElementById('prev-question').disabled = true;
             document.getElementById('next-question').disabled = true;
@@ -1965,12 +2079,16 @@
             }
 
             try {
-                // Create a sanitized test name for collection name (replace spaces and special characters)
+                // Mark test as taken in local storage
+                if (!takenTests.includes(currentTest.id)) {
+                    takenTests.push(currentTest.id);
+                    localStorage.setItem('takenTests', JSON.stringify(takenTests));
+                }
+                
                 const sanitizedTestName = currentTest.testName
                     .replace(/[^a-zA-Z0-9]/g, '_')
                     .toLowerCase();
                 
-                // Create result data object
                 const resultToSave = {
                     studentName: studentDetails.name,
                     rollNumber: studentDetails.rollNumber,
@@ -1988,11 +2106,9 @@
                     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                     resultId: resultId,
                     coachingName: "Study Point Coaching Centre",
-                    date: new Date().toISOString().split('T')[0] // YYYY-MM-DD format
+                    date: new Date().toISOString().split('T')[0]
                 };
 
-                // Save to Firebase
-                // Structure: studypointresults -> testName -> results -> individual results
                 const docRef = await db.collection('studypointresults')
                     .doc(sanitizedTestName)
                     .collection('results')
@@ -2008,25 +2124,20 @@
 
         // ===== TEST SUBMISSION & RESULT CALCULATION =====
         async function submitTest() {
-            // Prevent multiple submissions
             if (isSubmitting) {
                 return;
             }
             
-            // Show submission overlay
             showSubmissionOverlay();
             
-            // Clear timer
             if (timerInterval) {
                 clearInterval(timerInterval);
                 timerInterval = null;
             }
             
-            // Add a small delay to ensure overlay is visible
             await new Promise(resolve => setTimeout(resolve, 500));
             
             try {
-                // Calculate results
                 const totalQuestions = currentQuestions.length;
                 let attempted = 0;
                 let correct = 0;
@@ -2046,7 +2157,6 @@
                 const marksObtained = correct * marksPerQuestion;
                 const percentage = (marksObtained / totalMarks) * 100;
                 
-                // Determine Division
                 let division = '';
                 let statusClass = '';
                 
@@ -2064,10 +2174,8 @@
                     statusClass = 'fail-status';
                 }
                 
-                // Generate result ID
                 resultId = 'SPC' + Date.now() + Math.floor(Math.random() * 1000);
                 
-                // Prepare result data
                 currentResultData = {
                     totalQuestions,
                     attempted,
@@ -2080,20 +2188,16 @@
                     statusClass
                 };
                 
-                // Save result to Firebase
                 const saveSuccess = await saveResultToFirebase(currentResultData);
                 
-                // Small delay to show processing
                 await new Promise(resolve => setTimeout(resolve, 1000));
                 
-                // Hide overlay
                 hideSubmissionOverlay();
                 
                 if (!saveSuccess) {
                     alert("Note: Result could not be saved to server, but you can still download your result.");
                 }
                 
-                // Display results
                 displayResults(currentResultData);
                 
             } catch (error) {
@@ -2104,7 +2208,6 @@
         }
 
         function displayResults(results) {
-            // Set student and test info
             document.getElementById('result-student-name').textContent = studentDetails.name;
             document.getElementById('result-roll-number').textContent = studentDetails.rollNumber;
             document.getElementById('result-test-name').textContent = currentTest.testName;
@@ -2115,7 +2218,6 @@
             });
             document.getElementById('result-id').textContent = resultId;
             
-            // Set result values
             document.getElementById('total-questions').textContent = results.totalQuestions;
             document.getElementById('attempted-questions').textContent = results.attempted;
             document.getElementById('correct-answers').textContent = results.correct;
@@ -2124,7 +2226,6 @@
             document.getElementById('marks-obtained').textContent = results.marksObtained;
             document.getElementById('percentage').textContent = `${results.percentage}%`;
             
-            // Set division status
             const statusElement = document.getElementById('result-status');
             statusElement.className = `result-status ${results.statusClass}`;
             
@@ -2134,7 +2235,6 @@
                 statusElement.innerHTML = `<i class="fas fa-trophy"></i> ${results.division} <i class="fas fa-trophy"></i>`;
             }
             
-            // Show result page
             showPage('result');
         }
 
@@ -2148,7 +2248,6 @@
         });
 
         document.getElementById('new-test').addEventListener('click', function() {
-            // Reset state
             currentTest = null;
             currentQuestions = [];
             currentQuestionIndex = 0;
@@ -2157,10 +2256,10 @@
             currentResultData = null;
             isSubmitting = false;
             
-            // Clear form
             document.getElementById('student-form').reset();
             
-            // Return to test list
+            // Reload tests to update "NEW" status
+            loadTestsFromFirebase();
             showPage('test-list');
         });
 
@@ -2170,22 +2269,18 @@
             const pdf = new jsPDF('p', 'mm', 'a4');
             const printArea = document.getElementById('result-print-area');
             
-            // Show loading
             const downloadBtn = document.getElementById('download-pdf-top');
             const originalText = downloadBtn.innerHTML;
             downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating PDF...';
             downloadBtn.disabled = true;
             
             try {
-                // Temporarily adjust for PDF generation
                 const originalTransform = printArea.style.transform;
                 const originalMarginTop = printArea.style.marginTop;
                 
-                // Reset transform for PDF generation
                 printArea.style.transform = 'none';
                 printArea.style.marginTop = '0';
                 
-                // Create a clone for PDF generation
                 const clone = printArea.cloneNode(true);
                 clone.style.width = '700px';
                 clone.style.padding = '30px';
@@ -2193,14 +2288,12 @@
                 clone.style.border = '2px solid #1E88E5';
                 clone.style.borderRadius = '10px';
                 
-                // Add clone to body temporarily
                 clone.style.position = 'fixed';
                 clone.style.left = '-10000px';
                 clone.style.top = '0';
                 clone.style.zIndex = '-1000';
                 document.body.appendChild(clone);
                 
-                // Use html2canvas with better options for PDF
                 const canvas = await html2canvas(clone, {
                     scale: 2,
                     backgroundColor: '#FFFFFF',
@@ -2211,50 +2304,41 @@
                     windowWidth: 700
                 });
                 
-                // Remove clone
                 document.body.removeChild(clone);
                 
-                // Restore original transform
                 printArea.style.transform = originalTransform;
                 printArea.style.marginTop = originalMarginTop;
                 
                 const imgData = canvas.toDataURL('image/png');
-                const imgWidth = 190; // A4 width in mm (210mm - 20mm margins)
-                const pageHeight = 277; // A4 height in mm (297mm - 20mm margins)
+                const imgWidth = 190;
+                const pageHeight = 277;
                 const imgHeight = (canvas.height * imgWidth) / canvas.width;
                 
-                // Check if image fits on one page
                 if (imgHeight > pageHeight) {
-                    // Scale down to fit on one page
                     const scale = pageHeight / imgHeight;
                     const scaledWidth = imgWidth * scale * 0.95;
                     const scaledHeight = imgHeight * scale * 0.95;
                     
-                    // Center on page
                     const xPos = (210 - scaledWidth) / 2;
                     const yPos = (297 - scaledHeight) / 2;
                     
                     pdf.addImage(imgData, 'PNG', xPos, yPos, scaledWidth, scaledHeight);
                 } else {
-                    // Center vertically
                     const yPos = (pageHeight - imgHeight) / 2;
                     pdf.addImage(imgData, 'PNG', 10, yPos, imgWidth, imgHeight);
                 }
                 
-                // Add footer
                 pdf.setFontSize(10);
                 pdf.setTextColor(100, 100, 100);
                 pdf.text('This is an electronically generated result. No signature required.', 105, 287, { align: 'center' });
                 pdf.text(`Result ID: ${resultId} | Generated on: ${new Date().toLocaleDateString()}`, 105, 292, { align: 'center' });
                 
-                // Save the PDF
                 pdf.save(`StudyPoint_Result_${studentDetails.rollNumber}_${resultId}.pdf`);
                 
             } catch (error) {
                 console.error('Error generating PDF:', error);
                 alert('Error generating PDF. You can use the Print button instead.');
             } finally {
-                // Restore button
                 downloadBtn.innerHTML = originalText;
                 downloadBtn.disabled = false;
             }
@@ -2274,13 +2358,10 @@
 
         // ===== INITIALIZE APP =====
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize Firebase
             if (initializeFirebase()) {
-                // Load tests from Firebase
                 loadTestsFromFirebase();
             }
             
-            // Set up keyboard navigation for test screen
             document.addEventListener('keydown', function(e) {
                 if (currentPage === 'test-screen') {
                     if (e.key === 'ArrowLeft' && currentQuestionIndex > 0) {
@@ -2288,14 +2369,12 @@
                     } else if (e.key === 'ArrowRight' && currentQuestionIndex < currentQuestions.length - 1) {
                         showQuestion(currentQuestionIndex + 1);
                     } else if (e.key >= '1' && e.key <= '4') {
-                        // Select option with number keys (1-4 for A-D)
                         const optionIndex = parseInt(e.key) - 1;
                         const optionLabels = ['A', 'B', 'C', 'D'];
                         if (optionIndex < currentQuestions[currentQuestionIndex].options.length) {
                             selectOption(currentQuestionIndex, optionLabels[optionIndex]);
                         }
                     } else if (e.key === 'Enter') {
-                        // Enter to go to next question if available
                         if (currentQuestionIndex < currentQuestions.length - 1) {
                             showQuestion(currentQuestionIndex + 1);
                         }
@@ -2308,7 +2387,6 @@
         window.addEventListener('error', function(e) {
             console.error('Application error:', e.error);
             
-            // Show user-friendly error message
             if (currentPage === 'test-screen') {
                 alert('An error occurred during the test. Please try again.');
             }
