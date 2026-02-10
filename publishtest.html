@@ -196,7 +196,7 @@
         }
         
         textarea {
-            min-height: 280px;
+            min-height: 350px;
             resize: vertical;
             font-family: 'Courier New', monospace;
             line-height: 1.5;
@@ -206,19 +206,8 @@
             background-color: var(--secondary);
             padding: 15px;
             border-radius: 8px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             border-left: 4px solid var(--primary);
-        }
-        
-        .example {
-            background-color: #f5f5f5;
-            padding: 15px;
-            border-radius: 6px;
-            margin-top: 10px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
-            color: var(--light-text);
-            border-left: 3px solid var(--border);
         }
         
         .btn {
@@ -423,7 +412,7 @@
             border-top: 1px solid var(--border);
         }
         
-        /* Modal Styles */
+        /* Modal Styles - FIXED */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -451,6 +440,7 @@
             overflow-y: auto;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             animation: modalSlideIn 0.3s ease;
+            position: relative; /* Added */
         }
         
         @keyframes modalSlideIn {
@@ -464,12 +454,18 @@
             }
         }
         
+        /* FIXED: Modal header sticks to top */
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 20px;
             border-bottom: 2px solid var(--secondary);
+            background: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            border-radius: 12px 12px 0 0;
         }
         
         .modal-title {
@@ -480,23 +476,32 @@
             gap: 10px;
         }
         
+        /* FIXED: Close button stays in place */
         .modal-close {
             background: none;
             border: none;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             cursor: pointer;
             color: var(--light-text);
-            padding: 5px;
+            padding: 8px;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
             display: flex;
             align-items: center;
             justify-content: center;
+            position: sticky;
+            top: 20px;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            flex-shrink: 0; /* Added */
         }
         
         .modal-close:hover {
             background-color: #f5f5f5;
+            color: var(--error);
+            transform: scale(1.1);
         }
         
         .modal-content {
@@ -507,6 +512,11 @@
             display: flex;
             margin-bottom: 20px;
             border-bottom: 2px solid var(--border);
+            position: sticky;
+            top: 90px; /* Adjusted to be below header */
+            background: white;
+            z-index: 5;
+            padding-top: 10px;
         }
         
         .lang-tab {
@@ -568,6 +578,25 @@
             margin-top: 15px;
         }
         
+        /* Format hint inside textarea */
+        .format-hint {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: var(--light-text);
+            font-size: 0.95rem;
+            pointer-events: none;
+            opacity: 0.7;
+            width: 90%;
+            line-height: 1.6;
+        }
+        
+        .textarea-container {
+            position: relative;
+        }
+        
         @media (max-width: 768px) {
             .container {
                 padding: 15px;
@@ -613,6 +642,30 @@
             
             .modal {
                 max-height: 95vh;
+                max-width: 95vw;
+            }
+            
+            .format-hint {
+                font-size: 0.85rem;
+                padding: 0 10px;
+            }
+            
+            .modal-header {
+                padding: 15px;
+            }
+            
+            .modal-title {
+                font-size: 1.5rem;
+            }
+            
+            .modal-close {
+                width: 40px;
+                height: 40px;
+                font-size: 1.6rem;
+            }
+            
+            .language-tabs {
+                top: 80px; /* Adjusted for mobile */
             }
         }
     </style>
@@ -647,20 +700,21 @@
                     
                     <div class="instruction-section">
                         <h4><i class="fas fa-question-circle"></i> प्रश्न कैसे लिखें?</h4>
-                        <div class="example">
-Q1. फ्रांस की राजधानी क्या है?<br>
-(A) लंदन<br>
-(B) बर्लिन<br>
-(C) पेरिस<br>
-(D) मैड्रिड<br>
-Answer: C<br>
-<br>
-Q2. लाल ग्रह किसे कहते हैं?<br>
-(A) पृथ्वी<br>
-(B) मंगल<br>
-(C) बृहस्पति<br>
-(D) शुक्र<br>
-Answer: B
+                        <div class="note-box">
+                            <strong>फॉर्मेट:</strong><br>
+                            Q1. प्रश्न लिखें?<br>
+                            (A) पहला विकल्प<br>
+                            (B) दूसरा विकल्प<br>
+                            (C) तीसरा विकल्प<br>
+                            (D) चौथा विकल्प<br>
+                            Answer: A/B/C/D<br>
+                            <br>
+                            Q2. दूसरा प्रश्न?<br>
+                            (A) विकल्प 1<br>
+                            (B) विकल्प 2<br>
+                            (C) विकल्प 3<br>
+                            (D) विकल्प 4<br>
+                            Answer: B
                         </div>
                         <p><strong>ध्यान दें:</strong> प्रत्येक प्रश्न के बाद एक खाली लाइन छोड़ें</p>
                     </div>
@@ -676,7 +730,7 @@ Answer: B
                     </div>
                     
                     <div class="note-box">
-                        <strong><i class="fas fa-lightbulb"></i> टिप:</strong> आप एक बार में 200 प्रश्नों तक का टेस्ट बना सकते हैं। प्रश्न हमेशा नीचे दिए गए फॉर्मेट में लिखें।
+                        <strong><i class="fas fa-lightbulb"></i> टिप:</strong> आप एक बार में 200 प्रश्नों तक का टेस्ट बना सकते हैं। प्रश्न हमेशा ऊपर दिए गए फॉर्मेट में लिखें।
                     </div>
                 </div>
                 
@@ -696,20 +750,21 @@ Answer: B
                     
                     <div class="instruction-section">
                         <h4><i class="fas fa-question-circle"></i> How to Write Questions?</h4>
-                        <div class="example">
-Q1. What is the capital of France?<br>
-(A) London<br>
-(B) Berlin<br>
-(C) Paris<br>
-(D) Madrid<br>
-Answer: C<br>
-<br>
-Q2. Which planet is known as the Red Planet?<br>
-(A) Earth<br>
-(B) Mars<br>
-(C) Jupiter<br>
-(D) Venus<br>
-Answer: B
+                        <div class="note-box">
+                            <strong>Format:</strong><br>
+                            Q1. Write your question here?<br>
+                            (A) First option<br>
+                            (B) Second option<br>
+                            (C) Third option<br>
+                            (D) Fourth option<br>
+                            Answer: A/B/C/D<br>
+                            <br>
+                            Q2. Second question?<br>
+                            (A) Option 1<br>
+                            (B) Option 2<br>
+                            (C) Option 3<br>
+                            (D) Option 4<br>
+                            Answer: B
                         </div>
                         <p><strong>Note:</strong> Leave one blank line after each question</p>
                     </div>
@@ -785,27 +840,32 @@ Answer: B
                 </div>
                 
                 <div class="helper-text">
-                    <h4><i class="fas fa-info-circle"></i> How to format your questions:</h4>
-                    <div class="example">
-Q1. What is the capital of France?<br>
-(A) London<br>
-(B) Berlin<br>
-(C) Paris<br>
-(D) Madrid<br>
-Answer: C<br>
-<br>
-Q2. Which planet is known as the Red Planet?<br>
-(A) Earth<br>
-(B) Mars<br>
-(C) Jupiter<br>
-(D) Venus<br>
-Answer: B
-                    </div>
+                    <h4><i class="fas fa-info-circle"></i> Format for writing questions:</h4>
+                    <p>Write each question in this exact format. You can copy-paste from Word/Google Docs.</p>
                 </div>
                 
                 <div class="form-group">
                     <label for="questionsText"><i class="fas fa-question-circle"></i> Questions Text</label>
-                    <textarea id="questionsText" placeholder="Paste all your questions here..."></textarea>
+                    <div class="textarea-container">
+                        <textarea id="questionsText" placeholder="Paste all your questions here...
+
+Example:
+Q1. What is the capital of France?
+(A) London
+(B) Berlin
+(C) Paris
+(D) Madrid
+Answer: C
+
+Q2. Which planet is known as the Red Planet?
+(A) Earth
+(B) Mars
+(C) Jupiter
+(D) Venus
+Answer: B
+
+Note: Leave one blank line after each question"></textarea>
+                    </div>
                     <div id="parseInfo" class="parse-info">
                         Parsed: <span id="parsedCount">0</span> questions successfully
                     </div>
@@ -1346,6 +1406,20 @@ Answer: B
             if (e.key === 'Escape' && helpModal.classList.contains('show')) {
                 helpModal.classList.remove('show');
                 document.body.style.overflow = 'auto';
+            }
+        });
+        
+        // Remove example text when user starts typing
+        questionsTextInput.addEventListener('focus', function() {
+            if (this.value === this.getAttribute('placeholder')) {
+                this.value = '';
+            }
+        });
+        
+        // Restore example if empty on blur
+        questionsTextInput.addEventListener('blur', function() {
+            if (this.value.trim() === '') {
+                this.value = this.getAttribute('placeholder');
             }
         });
     </script>
