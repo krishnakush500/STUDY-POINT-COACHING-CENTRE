@@ -99,6 +99,13 @@
         .text-primary {
             color: #198754 !important;
         }
+        /* New Online Test Card */
+        .online-test-card {
+            border: 2px solid #198754 !important;
+        }
+        .online-test-card .card-body {
+            background-color: #e8f5e9;
+        }
     </style>
 </head>
 <body class="bg-light">
@@ -119,7 +126,7 @@
                     
                     <!-- Dashboard Cards -->
                     <div class="row">
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-3 mb-3">
                             <div class="card text-center">
                                 <div class="card-body">
                                     <h5 class="card-title">Create Result</h5>
@@ -128,7 +135,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-3 mb-3">
                             <div class="card text-center">
                                 <div class="card-body">
                                     <h5 class="card-title">Draft Results</h5>
@@ -137,12 +144,22 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-3 mb-3">
                             <div class="card text-center">
                                 <div class="card-body">
                                     <h5 class="card-title">Published Results</h5>
                                     <p class="card-text">View published results</p>
                                     <button id="oldResultsBtn" class="btn btn-info">Go</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <!-- New Online Test Card -->
+                            <div class="card text-center online-test-card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Online Tests</h5>
+                                    <p class="card-text">Create and manage online tests</p>
+                                    <button id="onlineTestsBtn" class="btn btn-success">Go</button>
                                 </div>
                             </div>
                         </div>
@@ -338,6 +355,13 @@
                             <div class="simple-instruction">"View" button: See full result</div>
                             <div class="simple-instruction">"Edit" button: Make changes to result</div>
                         </div>
+                        
+                        <h6 class="text-primary mt-4">Online Tests</h6>
+                        <div class="help-step">
+                            <div class="simple-instruction">"Online Tests" button: Opens a new page for online tests</div>
+                            <div class="simple-instruction">Create and manage online tests for students</div>
+                            <div class="simple-instruction">Separate page for test management</div>
+                        </div>
                     </div>
                     
                     <!-- Hindi Instructions -->
@@ -381,6 +405,13 @@
                             <div class="simple-instruction">प्रकाशित से: आप देख, एडिट या डिलीट कर सकते हैं</div>
                             <div class="simple-instruction">"View" बटन: पूरा रिजल्ट देखें</div>
                             <div class="simple-instruction">"Edit" बटन: रिजल्ट में बदलाव करें</div>
+                        </div>
+                        
+                        <h6 class="text-primary mt-4">ऑनलाइन टेस्ट</h6>
+                        <div class="help-step">
+                            <div class="simple-instruction">"Online Tests" बटन: ऑनलाइन टेस्ट के लिए नया पेज खोलता है</div>
+                            <div class="simple-instruction">छात्रों के लिए ऑनलाइन टेस्ट बनाएं और प्रबंधित करें</div>
+                            <div class="simple-instruction">टेस्ट प्रबंधन के लिए अलग पेज</div>
                         </div>
                     </div>
                 </div>
@@ -503,6 +534,7 @@
         const createResultBtn = document.getElementById('createResultBtn');
         const draftResultsBtn = document.getElementById('draftResultsBtn');
         const oldResultsBtn = document.getElementById('oldResultsBtn');
+        const onlineTestsBtn = document.getElementById('onlineTestsBtn'); // New button
         
         const backToDashboardBtn = document.getElementById('backToDashboardBtn');
         const backToDashboardBtn2 = document.getElementById('backToDashboardBtn2');
@@ -581,7 +613,7 @@
 
         // Add click vibration to important buttons only
         const importantButtons = [
-            createResultBtn, draftResultsBtn, oldResultsBtn, helpButton,
+            createResultBtn, draftResultsBtn, oldResultsBtn, onlineTestsBtn, helpButton,
             generateSubjectFieldsBtn, nextToStudentEntryBtn, addStudentBtn,
             updateStudentBtn, saveDraftBtn, publishResultBtn, saveChangesBtn
         ];
@@ -624,6 +656,12 @@
         oldResultsBtn.addEventListener('click', () => {
             loadOldResults();
             showSection(oldResultsSection);
+        });
+        
+        // New Online Tests Button Handler
+        onlineTestsBtn.addEventListener('click', () => {
+            // Open publishtest.html in a new tab
+            window.open('publishtest.html', '_blank');
         });
         
         // Handle back to dashboard with confirmation for edited published results
