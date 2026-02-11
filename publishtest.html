@@ -281,10 +281,6 @@
             background-color: var(--success);
         }
         
-        .btn-info {
-            background-color: var(--info);
-        }
-        
         .message {
             padding: 12px;
             border-radius: 8px;
@@ -340,11 +336,6 @@
             transition: transform 0.3s;
         }
         
-        .test-item.inactive {
-            border-left: 4px solid var(--error);
-            opacity: 0.8;
-        }
-        
         .test-item:hover {
             transform: translateY(-3px);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
@@ -384,7 +375,6 @@
             display: flex;
             gap: 8px;
             margin-top: 12px;
-            flex-wrap: wrap;
         }
         
         .status-badge {
@@ -404,11 +394,6 @@
         .status-active {
             background-color: #e8f5e9;
             color: var(--success);
-        }
-        
-        .status-inactive {
-            background-color: #ffebee;
-            color: var(--error);
         }
         
         .status-scheduled {
@@ -809,15 +794,6 @@
                 padding: 8px 12px;
                 font-size: 0.85rem;
             }
-            
-            .test-actions {
-                gap: 5px;
-            }
-            
-            .btn-small {
-                padding: 6px 10px;
-                font-size: 0.8rem;
-            }
         }
         
         @media (max-width: 360px) {
@@ -841,44 +817,6 @@
                 padding: 10px 16px;
                 font-size: 0.9rem;
             }
-            
-            .test-actions {
-                flex-direction: column;
-            }
-            
-            .btn-small {
-                width: 100%;
-                justify-content: center;
-            }
-        }
-        
-        /* Filter Tabs */
-        .filter-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .filter-tab {
-            padding: 8px 16px;
-            background: var(--secondary);
-            border: none;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            color: var(--light-text);
-        }
-        
-        .filter-tab:hover {
-            background: #e0e0e0;
-        }
-        
-        .filter-tab.active {
-            background-color: var(--primary);
-            color: white;
         }
     </style>
 </head>
@@ -932,18 +870,17 @@
                     </div>
                     
                     <div class="instruction-section">
-                        <h4><i class="fas fa-edit"></i> टेस्ट एडिट, डिलीट या डिएक्टिवेट कैसे करें?</h4>
+                        <h4><i class="fas fa-edit"></i> टेस्ट एडिट या डिलीट कैसे करें?</h4>
                         <ul>
                             <li><strong>Published Tests</strong> टैब पर जाएं</li>
                             <li>सभी टेस्ट्स की लिस्ट दिखेगी</li>
                             <li><strong>Edit</strong> बटन पर क्लिक करके टेस्ट बदल सकते हैं</li>
-                            <li><strong>Deactivate</strong> बटन से टेस्ट को छुपा सकते हैं (वापस Activate भी कर सकते हैं)</li>
                             <li><strong>Delete</strong> बटन से टेस्ट हटा सकते हैं</li>
                         </ul>
                     </div>
                     
                     <div class="note-box">
-                        <strong><i class="fas fa-lightbulb"></i> टिप:</strong> आप एक बार में 200 प्रश्नों तक का टेस्ट बना सकते हैं। Deactivated tests students को दिखाई नहीं देंगे, लेकिन बाद में फिर से activate कर सकते हैं।
+                        <strong><i class="fas fa-lightbulb"></i> टिप:</strong> आप एक बार में 200 प्रश्नों तक का टेस्ट बना सकते हैं। प्रश्न हमेशा ऊपर दिए गए फॉर्मेट में लिखें।
                     </div>
                 </div>
                 
@@ -983,18 +920,17 @@
                     </div>
                     
                     <div class="instruction-section">
-                        <h4><i class="fas fa-edit"></i> How to Edit, Delete or Deactivate Tests?</h4>
+                        <h4><i class="fas fa-edit"></i> How to Edit or Delete Tests?</h4>
                         <ul>
                             <li>Go to <strong>Published Tests</strong> tab</li>
                             <li>You will see list of all tests</li>
                             <li>Click <strong>Edit</strong> button to modify any test</li>
-                            <li>Click <strong>Deactivate</strong> button to hide test from students (can be reactivated later)</li>
-                            <li>Click <strong>Delete</strong> button to permanently remove any test</li>
+                            <li>Click <strong>Delete</strong> button to remove any test</li>
                         </ul>
                     </div>
                     
                     <div class="note-box">
-                        <strong><i class="fas fa-lightbulb"></i> Tip:</strong> You can create tests with up to 200 questions. Deactivated tests won't be visible to students but can be reactivated anytime.
+                        <strong><i class="fas fa-lightbulb"></i> Tip:</strong> You can create tests with up to 200 questions. Always write questions in the format shown above.
                     </div>
                 </div>
             </div>
@@ -1096,19 +1032,6 @@ Note: Leave one blank line after each question"></textarea>
             <div id="old-tests" class="tab-content">
                 <h2><i class="fas fa-history"></i> Published Tests</h2>
                 
-                <!-- Filter Tabs -->
-                <div class="filter-tabs">
-                    <button class="filter-tab active" data-filter="all">
-                        <i class="fas fa-list"></i> All Tests
-                    </button>
-                    <button class="filter-tab" data-filter="active">
-                        <i class="fas fa-play-circle"></i> Active
-                    </button>
-                    <button class="filter-tab" data-filter="inactive">
-                        <i class="fas fa-pause-circle"></i> Inactive
-                    </button>
-                </div>
-                
                 <div class="test-list" id="testsList">
                     <!-- Tests will be loaded here -->
                     <div class="empty-state">
@@ -1139,7 +1062,6 @@ Note: Leave one blank line after each question"></textarea>
         
         let db = null;
         let editingTestId = null;
-        let currentFilter = 'all';
         
         // DOM elements
         const tabs = document.querySelectorAll('.tab');
@@ -1149,7 +1071,6 @@ Note: Leave one blank line after each question"></textarea>
         const closeModalBtn = document.getElementById('closeModal');
         const langTabs = document.querySelectorAll('.lang-tab');
         const langContents = document.querySelectorAll('.lang-content');
-        const filterTabs = document.querySelectorAll('.filter-tab');
         
         // Test inputs
         const testNameInput = document.getElementById('testName');
@@ -1238,20 +1159,6 @@ Note: Leave one blank line after each question"></textarea>
                     top: 0,
                     behavior: 'smooth'
                 });
-            });
-        });
-        
-        // Filter tabs
-        filterTabs.forEach(tab => {
-            tab.addEventListener('click', function() {
-                const filter = this.getAttribute('data-filter');
-                
-                // Update active filter tab
-                filterTabs.forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-                
-                currentFilter = filter;
-                loadPublishedTests();
             });
         });
         
@@ -1445,19 +1352,59 @@ Note: Leave one blank line after each question"></textarea>
             try {
                 testsListDiv.innerHTML = '<div class="empty-state"><div class="loading"></div><p>Loading tests...</p></div>';
                 
-                let query = db.collection('tests').orderBy('createdTimestamp', 'desc');
+                const snapshot = await db.collection('tests')
+                    .orderBy('createdTimestamp', 'desc')
+                    .get();
                 
-               
+                console.log('Total tests found:', snapshot.size);
+                
+                if (snapshot.empty) {
+                    testsListDiv.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-clipboard-list"></i>
+                            <h3>No tests published yet</h3>
+                            <p>Create your first test using the "Create New Test" tab</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let testsHTML = '';
+                snapshot.forEach(doc => {
+                    const test = doc.data();
+                    const testId = doc.id;
+                    
+                    console.log('Test found:', test.testName, test);
+                    
+                    // Format date
+                    let createdDate = 'Unknown date';
+                    if (test.createdAt && test.createdAt.toDate) {
+                        createdDate = test.createdAt.toDate().toLocaleDateString('en-IN', {
+                            day: '2-digit',
+                            month: 'short',
+                            year: 'numeric'
+                        });
+                    } else if (test.createdTimestamp) {
+                        createdDate = new Date(test.createdTimestamp).toLocaleDateString('en-IN', {
+                            day: '2-digit',
+                            month: 'short',
+                            year: 'numeric'
+                        });
+                    }
+                    
+                    const statusClass = test.status === 'active' ? 'status-active' : 
+                                      test.status === 'draft' ? 'status-draft' : 'status-scheduled';
+                    
                     // Check if test has questions array
                     const questionCount = test.questions ? 
                         (Array.isArray(test.questions) ? test.questions.length : 0) : 
                         (test.totalQuestions || 0);
                     
                     testsHTML += `
-                        <div class="test-item ${!isActive ? 'inactive' : ''}" data-test-id="${testId}">
+                        <div class="test-item" data-test-id="${testId}">
                             <div class="test-header">
                                 <div class="test-title">${test.testName || 'Unnamed Test'}</div>
-                                <span class="status-badge ${statusClass}">${status.toUpperCase()}</span>
+                                <span class="status-badge ${statusClass}">${(test.status || 'active').toUpperCase()}</span>
                             </div>
                             <div class="test-meta">
                                 <span><i class="fas fa-question-circle"></i> ${questionCount} Questions</span>
@@ -1469,9 +1416,6 @@ Note: Leave one blank line after each question"></textarea>
                                 <button class="btn-small btn-success edit-test" data-test-id="${testId}">
                                     <i class="fas fa-edit"></i> Edit
                                 </button>
-                                <button class="btn-small ${isActive ? 'btn-warning' : 'btn-info'} toggle-status" data-test-id="${testId}" data-current-status="${status}">
-                                    <i class="fas ${isActive ? 'fa-pause-circle' : 'fa-play-circle'}"></i> ${isActive ? 'Deactivate' : 'Activate'}
-                                </button>
                                 <button class="btn-small btn-danger delete-test" data-test-id="${testId}">
                                     <i class="fas fa-trash"></i> Delete
                                 </button>
@@ -1482,20 +1426,11 @@ Note: Leave one blank line after each question"></textarea>
                 
                 testsListDiv.innerHTML = testsHTML;
                 
-                // Add event listeners for buttons
+                // Add event listeners for edit and delete buttons
                 document.querySelectorAll('.edit-test').forEach(btn => {
                     btn.addEventListener('click', function() {
                         const testId = this.getAttribute('data-test-id');
                         editTest(testId);
-                    });
-                });
-                
-                document.querySelectorAll('.toggle-status').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const testId = this.getAttribute('data-test-id');
-                        const currentStatus = this.getAttribute('data-current-status');
-                        const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
-                        toggleTestStatus(testId, newStatus);
                     });
                 });
                 
@@ -1516,31 +1451,6 @@ Note: Leave one blank line after each question"></textarea>
                         <p>Please check if Firebase permissions are set correctly</p>
                     </div>
                 `;
-            }
-        }
-        
-        // Toggle test status (active/inactive)
-        async function toggleTestStatus(testId, newStatus) {
-            const action = newStatus === 'active' ? 'activate' : 'deactivate';
-            
-            if (!confirm(`Are you sure you want to ${action} this test?`)) {
-                return;
-            }
-            
-            try {
-                const statusText = newStatus === 'active' ? 'activated' : 'deactivated';
-                
-                await db.collection('tests').doc(testId).update({
-                    status: newStatus,
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                
-                showMessage(`Test ${statusText} successfully!`, true);
-                loadPublishedTests();
-                
-            } catch (error) {
-                console.error('Error toggling test status:', error);
-                showMessage(`Failed to ${action} test: ${error.message}`, false);
             }
         }
         
