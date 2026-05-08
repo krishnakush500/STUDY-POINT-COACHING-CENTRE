@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+    <title>➕ Add Student · Fee Manager</title>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <style>
+        *{ margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',Roboto,sans-serif; }
+        body{ background:#f0f5fa; padding:24px 16px; display:flex; flex-direction:column; align-items:center; }
+        .form-card{ background:white; max-width:950px; width:100%; margin:20px auto; border-radius:48px; padding:36px 30px; box-shadow:0 25px 40px -15px #1e3b5b; }
+        h2{ display:flex; align-items:center; gap:12px; color:#174873; margin-bottom:28px; font-size:1.9rem; }
+        .field{ margin-bottom:22px; }
+        label{ font-weight:600; display:flex; align-items:center; gap:6px; margin-bottom:10px; color:#1b4a77; font-size:1.05rem; }
+        input, select{ width:100%; padding:14px 20px; font-size:1rem; background:#f3f8ff; border:1px solid #b8ceec; border-radius:60px; outline:none; transition: all 0.2s ease; }
+        input:focus, select:focus{ border-color:#1b5e9e; background:white; box-shadow:0 0 0 3px rgba(27,94,158,0.1); }
+        .row2{ display:flex; gap:15px; flex-wrap:wrap; }
+        .row2 .field{ flex:1 1 200px; }
+        
+        .fees-section{ background:#f8fbfe; border-radius:32px; padding:18px 20px; margin:20px 0 12px 0; border:1px solid #d9e6f5; }
+        .section-title{ font-size:1.25rem; font-weight:800; color:#174873; margin-bottom:16px; display:flex; align-items:center; gap:8px; border-left:4px solid #1b4f9b; padding-left:14px; }
+        .checkbox-fees-box{ background:#eef3fc; border-radius:28px; padding:20px; margin:15px 0; }
+        .fee-checkbox-item{ display:flex; align-items:center; gap:15px; background:white; padding:12px 20px; border-radius:50px; margin-bottom:10px; border:1px solid #cde1f0; }
+        .fee-checkbox-item input{ width:20px; height:20px; cursor:pointer; accent-color:#1b4f9b; }
+        .fee-checkbox-item label{ margin:0; font-weight:500; font-size:1rem; cursor:pointer; flex:1; }
+        .fee-price{ font-weight:700; color:#0f5c3e; background:#e2f0e8; padding:2px 12px; border-radius:40px; font-size:0.85rem; }
+        .discount-box{ background:#fff3cd; border-radius:50px; padding:12px 20px; margin-top:15px; border:1px solid #ffe2a4; }
+        .total-box{ background:#e6f0fa; border-radius:50px; padding:16px 24px; margin:20px 0 10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
+        .total-label{ font-weight:800; font-size:1.3rem; color:#0a3a60; }
+        .total-amount{ font-size:2rem; font-weight:800; color:#1b4f9b; background:white; padding:5px 20px; border-radius:60px; box-shadow:0 2px 6px rgba(0,0,0,0.05); }
+        .due-highlight{ background:#eef2f5; color:#b44; font-weight:700; cursor:default; border-color:#d4e0ec; }
+        .btn-submit{ background:#1b4f9b; border:none; color:white; font-size:1.3rem; font-weight:700; padding:18px; width:100%; border-radius:60px; display:flex; align-items:center; justify-content:center; gap:12px; margin-top:18px; cursor:pointer; box-shadow:0 15px 20px -8px #123a60; transition:0.2s; }
+        .btn-submit:hover{ background:#0f3d73; transform:translateY(-2px); }
+        .btn-submit:disabled{ opacity:0.6; cursor:not-allowed; transform:none; }
+        .info-note{ text-align:center; margin-top:20px; color:#2c577c; }
+        a{ color:#1b4f9b; font-weight:600; text-decoration:none; border-bottom:1px dotted #1b4f9b; }
+        .loading{ text-align:center; padding:14px; background:#eef2f8; border-radius:50px; margin-top:12px; font-weight:500; display:none; }
+        .error-msg{ color:#c0392b; background:#fdecea; border-radius:40px; padding:10px 16px; margin-top:12px; text-align:center; display:none; }
+        .success-toast{ position:fixed; bottom:25px; left:50%; transform:translateX(-50%); background:#1e6f3f; color:white; padding:12px 28px; border-radius:60px; font-weight:600; z-index:1000; opacity:0; transition:opacity 0.2s; pointer-events:none; }
+        
+        @media (max-width:650px){ .form-card{ padding:24px 18px; } }
+    </style>
+</head>
+<body>
+    <div class="form-card">
+        <h2>📋 Add New Student</h2>
+        
+        <div class="field">
+            <label>🔢 Roll Number</label>
+            <input type="text" id="rollNumber" placeholder="e.g. 24" required>
+        </div>
+        <div class="field">
+            <label>🧑 Student Name</label>
+            <input type="text" id="studentName" placeholder="Full name" required>
+        </div>
+        <div class="field">
+            <label>👨 Father Name</label>
+            <input type="text" id="fatherName" placeholder="Father's name" required>
+        </div>
+        <div class="field">
+            <label>📞 Phone Number</label>
+            <input type="tel" id="phoneNumber" placeholder="e.g. 9876543210" pattern="[0-9]{10}" title="Please enter 10 digit mobile number">
+        </div>
+        <div class="row2">
+            <div class="field">
+                <label>📅 Session</label>
+                <select id="sessionSelect">
+                    <option value="2024-25">2024-25</option>
+                    <option value="2025-26">2025-26</option>
+                    <option value="2026-27" selected>2026-27</option>
+                </select>
+            </div>
+            <div class="field">
+                <label>🏫 Class</label>
+                <select id="classSelect">
+                    <option value="Class 6">Class 6</option>
+                    <option value="Class 7">Class 7</option>
+                    <option value="Class 8">Class 8</option>
+                    <option value="Class 9">Class 9</option>
+                    <option value="Class 10">Class 10</option>
+                    <option value="Class 11">Class 11</option>
+                    <option value="Class 12">Class 12</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- NEW FEE STRUCTURE SECTION -->
+        <div class="checkbox-fees-box">
+            <div class="section-title" style="margin-bottom:15px;">💰 Select Fees Components</div>
+            
+            <div class="fee-checkbox-item">
+                <input type="checkbox" id="fee_admission" checked>
+                <label for="fee_admission">📋 Admission Fee</label>
+                <span class="fee-price">₹500/-</span>
+            </div>
+            
+            <div class="fee-checkbox-item">
+                <input type="checkbox" id="fee_tuition" checked>
+                <label for="fee_tuition">📚 Tuition Fee (₹800 x 12 months)</label>
+                <span class="fee-price">₹9,600/-</span>
+            </div>
+            
+            <div class="fee-checkbox-item">
+                <input type="checkbox" id="fee_activity" checked>
+                <label for="fee_activity">⚡ Activity Fee</label>
+                <span class="fee-price">₹200/-</span>
+            </div>
+            
+            <div class="fee-checkbox-item">
+                <input type="checkbox" id="fee_exam" checked>
+                <label for="fee_exam">📝 Exam Fee</label>
+                <span class="fee-price">₹300/-</span>
+            </div>
+            
+            <div class="fee-checkbox-item">
+                <input type="checkbox" id="fee_misc" checked>
+                <label for="fee_misc">🔄 Miscellaneous Fee</label>
+                <span class="fee-price">₹150/-</span>
+            </div>
+            
+            <div class="fee-checkbox-item">
+                <input type="checkbox" id="fee_other" style="accent-color: #f5a623;">
+                <label for="fee_other">➕ Other Fee (As Applicable)</label>
+                <span class="fee-price">Custom</span>
+            </div>
+            
+            <div class="field" style="margin-top: 10px;" id="otherFeeField" style="display:none;">
+                <label>Other Fee Amount (₹)</label>
+                <input type="number" id="otherFeeAmount" value="0" min="0" step="1" placeholder="Enter amount">
+            </div>
+            
+            <div class="discount-box">
+                <label style="font-weight:600; margin-bottom:8px; display:block;">🎁 Discount (₹)</label>
+                <input type="number" id="discountAmount" value="0" min="0" step="1" placeholder="Enter discount amount" style="width:100%; padding:10px 15px; border-radius:40px; border:1px solid #ffe2a4; background:white;">
+            </div>
+            
+            <div class="total-box" style="margin-top:20px;">
+                <span class="total-label">💰 Total Fees:</span>
+                <span class="total-amount" id="totalAmountDisplay">0</span>
+            </div>
+            
+            <div class="field" style="margin-top:15px;">
+                <label>💵 Received Amount (₹)</label>
+                <input type="number" id="receivedAmount" value="0" min="0" step="1">
+            </div>
+            <div class="field">
+                <label>⏳ Due Amount (Auto)</label>
+                <input type="number" id="dueAmount" class="due-highlight" readonly value="0">
+            </div>
+        </div>
+
+        <button class="btn-submit" id="addStudentBtn">➕ Add Student & Save to Database</button>
+        <div class="info-note">↩ <a href="dashboard-study-point.html">Back to dashboard</a></div>
+        <div id="loadingMessage" class="loading">⏳ Saving to database...</div>
+        <div id="errorMessage" class="error-msg"></div>
+    </div>
+    <div id="successToast" class="success-toast">✅ Student added successfully!</div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBDN5ATO_LQ-3THveZDGyvLjtjjavgTIJk",
+            authDomain: "study-point-coaching-centre.firebaseapp.com",
+            projectId: "study-point-coaching-centre",
+            storageBucket: "study-point-coaching-centre.firebasestorage.app"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const feesCollection = db.collection('fees_study_point');
+        const transactionsCollection = db.collection('transactions_study_point');
+
+        // DOM Elements
+        const rollInput = document.getElementById('rollNumber');
+        const nameInput = document.getElementById('studentName');
+        const fatherInput = document.getElementById('fatherName');
+        const phoneInput = document.getElementById('phoneNumber');
+        const sessionSelect = document.getElementById('sessionSelect');
+        const classSelect = document.getElementById('classSelect');
+        const addBtn = document.getElementById('addStudentBtn');
+        const loadingMsg = document.getElementById('loadingMessage');
+        const errorDiv = document.getElementById('errorMessage');
+        const successToast = document.getElementById('successToast');
+
+        // Fee Elements
+        const feeAdmission = document.getElementById('fee_admission');
+        const feeTuition = document.getElementById('fee_tuition');
+        const feeActivity = document.getElementById('fee_activity');
+        const feeExam = document.getElementById('fee_exam');
+        const feeMisc = document.getElementById('fee_misc');
+        const feeOther = document.getElementById('fee_other');
+        const otherFeeField = document.getElementById('otherFeeField');
+        const otherFeeAmount = document.getElementById('otherFeeAmount');
+        const discountInput = document.getElementById('discountAmount');
+        const receivedInput = document.getElementById('receivedAmount');
+        const dueInput = document.getElementById('dueAmount');
+        const totalDisplay = document.getElementById('totalAmountDisplay');
+
+        // Fee amounts
+        const ADMISSION_FEE = 500;
+        const TUITION_FEE = 9600;  // 800 x 12 months
+        const ACTIVITY_FEE = 200;
+        const EXAM_FEE = 300;
+        const MISC_FEE = 150;
+
+        let toastTimeout;
+        function showToast(message) {
+            successToast.textContent = message;
+            successToast.style.opacity = '1';
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => { successToast.style.opacity = '0'; }, 2500);
+        }
+
+        function showError(message) {
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => { errorDiv.style.display = 'none'; }, 4000);
+        }
+
+        // Show/Hide Other Fee field
+        feeOther.addEventListener('change', function() {
+            if (feeOther.checked) {
+                otherFeeField.style.display = 'block';
+            } else {
+                otherFeeField.style.display = 'none';
+                otherFeeAmount.value = '0';
+            }
+            calculateTotal();
+        });
+
+        function calculateTotal() {
+            let total = 0;
+            if (feeAdmission.checked) total += ADMISSION_FEE;
+            if (feeTuition.checked) total += TUITION_FEE;
+            if (feeActivity.checked) total += ACTIVITY_FEE;
+            if (feeExam.checked) total += EXAM_FEE;
+            if (feeMisc.checked) total += MISC_FEE;
+            if (feeOther.checked && otherFeeAmount.value) total += parseInt(otherFeeAmount.value) || 0;
+            
+            const discount = parseInt(discountInput.value) || 0;
+            total = Math.max(0, total - discount);
+            
+            totalDisplay.innerText = total;
+            
+            const received = parseInt(receivedInput.value) || 0;
+            const due = Math.max(0, total - received);
+            dueInput.value = due;
+        }
+
+        // Add event listeners
+        [feeAdmission, feeTuition, feeActivity, feeExam, feeMisc, feeOther, otherFeeAmount, discountInput, receivedInput].forEach(el => {
+            if (el) el.addEventListener('input', calculateTotal);
+            if (el) el.addEventListener('change', calculateTotal);
+        });
+
+        function resetForm() {
+            rollInput.value = '';
+            nameInput.value = '';
+            fatherInput.value = '';
+            phoneInput.value = '';
+            sessionSelect.value = '2026-27';
+            classSelect.value = 'Class 6';
+            
+            feeAdmission.checked = true;
+            feeTuition.checked = true;
+            feeActivity.checked = true;
+            feeExam.checked = true;
+            feeMisc.checked = true;
+            feeOther.checked = false;
+            otherFeeField.style.display = 'none';
+            otherFeeAmount.value = '0';
+            discountInput.value = '0';
+            receivedInput.value = '0';
+            
+            calculateTotal();
+            rollInput.focus();
+        }
+
+        addBtn.addEventListener('click', async function() {
+            errorDiv.style.display = 'none';
+            
+            const roll = rollInput.value.trim();
+            const name = nameInput.value.trim();
+            const father = fatherInput.value.trim();
+            const phone = phoneInput.value.trim();
+            const session = sessionSelect.value;
+            const classVal = classSelect.value;
+            
+            if (!roll || !name || !father) {
+                showError('❌ Please fill Roll Number, Student Name and Father Name');
+                return;
+            }
+            
+            const totalAmount = parseInt(totalDisplay.innerText) || 0;
+            const receivedAmount = parseInt(receivedInput.value) || 0;
+            const dueAmount = Math.max(0, totalAmount - receivedAmount);
+            
+            // Build fee breakdown
+            const feeBreakdown = {
+                admission_fee: feeAdmission.checked ? ADMISSION_FEE : 0,
+                tuition_fee: feeTuition.checked ? TUITION_FEE : 0,
+                activity_fee: feeActivity.checked ? ACTIVITY_FEE : 0,
+                exam_fee: feeExam.checked ? EXAM_FEE : 0,
+                misc_fee: feeMisc.checked ? MISC_FEE : 0,
+                other_fee: feeOther.checked ? (parseInt(otherFeeAmount.value) || 0) : 0,
+                discount: parseInt(discountInput.value) || 0,
+                total: totalAmount
+            };
+            
+            let studentData = {
+                roll_number: roll,
+                student_name: name,
+                father_name: father,
+                phone_number: phone || '',
+                class: classVal,
+                session: session,
+                total_amount: totalAmount,
+                received_amount: receivedAmount,
+                due_amount: dueAmount,
+                discount_applied: parseInt(discountInput.value) || 0,
+                fee_breakdown: feeBreakdown,
+                created_at: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            loadingMsg.style.display = 'block';
+            addBtn.disabled = true;
+            
+            try {
+                const docRef = await feesCollection.add(studentData);
+                const studentId = docRef.id;
+                
+                if (receivedAmount > 0) {
+                    const transactionId = 'TXN' + Date.now() + Math.floor(Math.random() * 10000);
+                    const transactionData = {
+                        studentId: studentId,
+                        studentName: name,
+                        rollNumber: roll,
+                        studentClass: classVal,
+                        session: session,
+                        amount: receivedAmount,
+                        previousReceived: 0,
+                        newReceived: receivedAmount,
+                        previousDue: totalAmount,
+                        newDue: dueAmount,
+                        transactionId: transactionId,
+                        date: new Date().toISOString(),
+                        created_at: firebase.firestore.FieldValue.serverTimestamp(),
+                        note: `Initial admission payment of ₹${receivedAmount}`
+                    };
+                    await transactionsCollection.add(transactionData);
+                }
+                
+                showToast(`✅ ${name} added successfully! (Total: ₹${totalAmount}, Paid: ₹${receivedAmount})`);
+                resetForm();
+            } catch (error) {
+                console.error("Firestore error:", error);
+                showError(`❌ Save failed: ${error.message}`);
+            } finally {
+                loadingMsg.style.display = 'none';
+                addBtn.disabled = false;
+            }
+        });
+        
+        calculateTotal();
+        
+        const fields = ['rollNumber', 'studentName', 'fatherName', 'phoneNumber'];
+        fields.forEach(id => {
+            const el = document.getElementById(id);
+            if(el) el.addEventListener('keypress', (e) => { if(e.key === 'Enter') addBtn.click(); });
+        });
+    </script>
+</body>
+</html>
