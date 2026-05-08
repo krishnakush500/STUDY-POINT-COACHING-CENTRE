@@ -1,1316 +1,1570 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Exam Results - STUDY POINT COACHING CENTRE</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-  
-  <!-- html2pdf library for PDF generation -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  
-  <style>
-    * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background:#f5f5f5; min-height:100vh; padding:20px; }
-    
-    /* Header */
-    .header { 
-      background:linear-gradient(to right,#1a237e,#283593,#303f9f); 
-      color:white; 
-      padding:25px; 
-      text-align:center; 
-      position:relative; 
-      overflow:hidden; 
-      border-radius:15px 15px 0 0;
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 auto 0 auto;
-      box-shadow:0 15px 30px rgba(0,0,0,0.2);
-    }
-    .school-name { font-size:2rem; font-weight:700; line-height:1.2; }
-    .location { font-size:1rem; margin-bottom:15px; }
-    .director-info { display:flex; align-items:center; justify-content:center; margin-top:20px; flex-wrap:wrap; }
-    .director-photo { 
-      width:100px; 
-      height:100px; 
-      border-radius:50%; 
-      border:4px solid white; 
-      overflow:hidden; 
-      margin-right:15px; 
-      cursor: pointer;
-      transition: transform 0.3s;
-    }
-    .director-photo:hover {
-      transform: scale(1.05);
-    }
-    .director-photo img{width:100%;height:100%;object-fit:cover;}
-    .director-details{text-align:left;}
-    .director-details h2{font-size:1rem; margin-bottom:5px;}
-    .director-details h3{font-size:1.1rem; margin-bottom:5px;}
-    .director-details p{font-size:0.9rem;}
-
-    /* Online Test Button */
-    .online-test-container {
-      text-align: center;
-      margin: 15px auto;
-      width: 100%;
-      max-width: 1200px;
-    }
-    .online-test-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      padding: 14px 35px;
-      background: linear-gradient(to right, #4CAF50, #2E7D32);
-      color: white;
-      border: none;
-      border-radius: 50px;
-      font-size: 1.1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.15);
-      text-decoration: none;
-      text-align: center;
-    }
-    .online-test-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-      background: linear-gradient(to right, #43A047, #1B5E20);
-    }
-    .online-test-btn i {
-      font-size: 1.3rem;
-    }
-
-    /* Moving Admission Text */
-    .marquee-container {
-      background:#ffc107;
-      overflow:hidden;
-      position:relative;
-      height:50px;
-      display:flex;
-      align-items:center;
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 auto 0 auto;
-    }
-    .marquee-content {
-      display:flex;
-      animation: marquee 20s linear infinite;
-      white-space:nowrap;
-      font-weight:600;
-      font-size:1.1rem;
-      color:#333;
-    }
-    @keyframes marquee {
-      0% { transform: translateX(100%); }
-      100% { transform: translateX(-100%); }
-    }
-
-    /* Results Section */
-    .results-section { 
-      padding:20px; 
-      background:#f9f9f9; 
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 auto 0 auto;
-      border-radius: 0 0 15px 15px;
-      box-shadow:0 15px 30px rgba(0,0,0,0.2);
-    }
-    .section-title { font-size:1.5rem; color:#1a237e; text-align:center; margin-bottom:20px; padding-bottom:10px; border-bottom:2px solid #1a237e; }
-    
-    .results-list { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:15px; margin-bottom:25px; }
-    .result-item { background:white; padding:15px; border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,0.1); cursor:pointer; transition:all 0.3s; border-left:4px solid #1a237e; position:relative; }
-    .result-item:hover { transform:translateY(-5px); box-shadow:0 8px 20px rgba(0,0,0,0.15); }
-    .result-item.active { border-left-color:#ffc107; background:#fffae6; }
-    .exam-name { font-size:1rem; color:#1a237e; font-weight:600; margin-bottom:8px; }
-    .exam-date { font-size:0.8rem; color:#666; margin-bottom:5px; }
-    
-    /* NEW Sticker */
-    .new-sticker {
-      position:absolute;
-      top:-8px;
-      right:-8px;
-      background:#ff4757;
-      color:white;
-      font-size:0.7rem;
-      font-weight:bold;
-      padding:4px 8px;
-      border-radius:10px;
-      animation: blink 1s infinite;
-      z-index:10;
-    }
-    @keyframes blink {
-      0%, 100% { opacity:1; }
-      50% { opacity:0.7; }
-    }
-    
-    .roll-input-section { background:white; padding:20px; border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,0.1); margin-top:20px; text-align:center; display:none; }
-    .roll-input-section h3 { color:#1a237e; margin-bottom:15px; font-size:1.1rem; }
-    .input-group { display:flex; justify-content:center; gap:8px; flex-wrap:wrap; }
-    .input-group input { padding:10px 12px; font-size:0.95rem; border-radius:5px; border:1px solid #ccc; width:100%; max-width:250px; }
-    .result-btn { padding:10px 20px; background:#1a237e; color:white; font-size:0.95rem; border:none; border-radius:8px; cursor:pointer; transition:background 0.3s; }
-    .result-btn:hover { background:#283593; }
-    
-    /* Result Card - Mobile Optimized */
-    .result-card { display:none; width:95%; max-width:700px; margin:20px auto; background:white; border-radius:15px; box-shadow:0 10px 30px rgba(0,0,0,0.2); padding:20px; position:relative; overflow-x:auto; }
-    .result-card-header { text-align:center; margin-bottom:20px; padding-bottom:10px; border-bottom:2px solid #1a237e; }
-    .result-card-header h2 { color:#1a237e; margin-bottom:5px; font-size:1.3rem; }
-    .result-card-header h3 { color:#b21f1f; margin-bottom:5px; font-size:1.1rem; }
-    .result-card-header p { color:#666; font-size:0.85rem; }
-    
-    .student-info { margin-bottom:20px; }
-    .info-row { display:flex; flex-direction:column; margin-bottom:8px; padding:8px 12px; background:#f5f5f5; border-radius:5px; }
-    .info-label { font-weight:600; color:#1a237e; font-size:0.9rem; margin-bottom:3px; }
-    .info-value { color:#333; font-size:0.95rem; }
-    
-    .marks-table { width:100%; border-collapse:collapse; margin-bottom:20px; min-width:500px; }
-    .marks-table th { background:#1a237e; color:white; padding:10px; text-align:left; font-size:0.9rem; }
-    .marks-table td { padding:10px; border-bottom:1px solid #ddd; font-size:0.9rem; }
-    .marks-table tr:nth-child(even) { background:#f9f9f9; }
-    .marks-table tr:hover { background:#f0f0f0; }
-    
-    .total-marks { background:#e8f5e8 !important; font-weight:600; color:#1a237e; }
-    .percentage-display { text-align:center; font-size:1.2rem; color:#1a237e; font-weight:700; padding:12px; background:#f0f7ff; border-radius:10px; margin-top:15px; }
-    .division-display { text-align:center; font-size:1.4rem; color:#1a237e; font-weight:700; padding:12px; margin-top:12px; border-radius:10px; }
-    .coaching-mention { text-align:center; margin-top:15px; padding-top:12px; border-top:1px solid #ddd; color:#666; font-style:italic; font-size:0.9rem; }
-    
-    .action-buttons { display:flex; justify-content:center; gap:10px; margin-top:20px; padding-top:15px; border-top:1px solid #ddd; flex-wrap:wrap; }
-    .action-buttons button { padding:10px 15px; font-size:0.9rem; border:none; border-radius:8px; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; gap:5px; }
-    .download-btn { background:#28a745; color:white; }
-    .download-btn:hover { background:#218838; }
-    .back-btn { background:#6c757d; color:white; }
-    .back-btn:hover { background:#5a6268; }
-    
-    .loading { text-align:center; padding:20px; font-size:1rem; color:#1a237e; }
-    .error { text-align:center; padding:15px; background:#ffe6e6; color:#b30000; border-radius:5px; margin:15px 0; }
-    
-    /* Coaching Promotion Section */
-    .promotion-section {
-      padding: 20px;
-      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
-      margin: 20px auto;
-      border-radius: 10px;
-      border-left: 5px solid #1a237e;
-      width: 100%;
-      max-width: 1200px;
-    }
-    .promotion-section h3 {
-      color: #1a237e;
-      text-align: center;
-      margin-bottom: 15px;
-      font-size: 1.5rem;
-    }
-    .about-list {
-      font-size: 0.95rem;
-      line-height: 1.6;
-      color: #333;
-      padding: 0 10px;
-      list-style-type: decimal;
-      margin-left: 20px;
-    }
-    .about-list li {
-      margin-bottom: 10px;
-      padding-left: 5px;
-    }
-    .promo-highlight {
-      color: #b21f1f;
-      font-weight: 600;
-    }
-    
-    /* Motivational Shayari Section */
-    .shayari-section {
-      padding: 25px 20px;
-      background: #f8f9fa;
-      margin: 20px auto;
-      border-radius: 10px;
-      border-top: 3px solid #1a237e;
-      border-bottom: 3px solid #1a237e;
-      width: 100%;
-      max-width: 1200px;
-    }
-    .shayari-title {
-      text-align: center;
-      color: #1a237e;
-      margin-bottom: 20px;
-      font-size: 1.8rem;
-      position: relative;
-    }
-    .shayari-title:after {
-      content: '';
-      position: absolute;
-      width: 100px;
-      height: 3px;
-      background: #ffc107;
-      bottom: -8px;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-    .shayari-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 15px;
-      margin-top: 20px;
-    }
-    .shayari-card {
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      border-left: 4px solid #1a237e;
-      transition: transform 0.3s;
-    }
-    .shayari-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
-    }
-    .shayari-text {
-      font-size: 1rem;
-      line-height: 1.6;
-      color: #333;
-      font-style: italic;
-      text-align: center;
-      margin-bottom: 10px;
-      min-height: 80px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .shayari-author {
-      text-align: center;
-      color: #1a237e;
-      font-weight: 600;
-      font-size: 0.9rem;
-      border-top: 1px dashed #ddd;
-      padding-top: 10px;
-      margin-top: 10px;
-    }
-    
-    /* Footer */
-    .footer { 
-      background:#1a237e; 
-      color:white; 
-      text-align:center; 
-      padding:15px; 
-      font-size:0.9rem; 
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
-      border-radius: 0 0 15px 15px;
-    }
-    
-    /* Developer Contact Section */
-    .developer-contact {
-      background: #f1f3f5;
-      padding: 15px;
-      text-align: center;
-      border-top: 1px solid #ddd;
-      margin: 20px auto 0 auto;
-      font-size: 0.85rem;
-      width: 100%;
-      max-width: 1200px;
-      border-radius: 10px;
-    }
-    .developer-contact h3 {
-      color: #1a237e;
-      margin-bottom: 10px;
-      font-size: 1rem;
-    }
-    .developer-contact p {
-      color: #555;
-      margin-bottom: 8px;
-      line-height: 1.4;
-    }
-    .contact-info {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      flex-wrap: wrap;
-      margin-top: 10px;
-    }
-    .contact-item {
-      background: white;
-      padding: 8px 15px;
-      border-radius: 5px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .contact-item i {
-      color: #1a237e;
-      font-size: 0.9rem;
-    }
-    .contact-item span {
-      font-size: 0.8rem;
-    }
-    
-    /* Admin Password Modal */
-    .admin-modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.7);
-      z-index: 10000;
-      justify-content: center;
-      align-items: center;
-    }
-    .modal-content {
-      background: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      width: 90%;
-      max-width: 400px;
-      text-align: center;
-    }
-    .modal-content h3 {
-      color: #1a237e;
-      margin-bottom: 20px;
-    }
-    .modal-content input {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 15px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      font-size: 1rem;
-    }
-    .modal-buttons {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-    }
-    .modal-btn {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-    .modal-btn.submit {
-      background: #1a237e;
-      color: white;
-    }
-    .modal-btn.cancel {
-      background: #ccc;
-      color: #333;
-    }
-    
-    /* PDF Generation Fix Styles */
-    .pdf-clone-container {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: white;
-      z-index: 10000;
-      overflow: auto;
-      opacity: 0;
-      pointer-events: none;
-      visibility: hidden;
-    }
-    
-    .pdf-clone {
-      width: 100%;
-      max-width: 800px;
-      margin: 20px auto;
-      padding: 20px;
-      background: white;
-      box-shadow: 0 0 20px rgba(0,0,0,0.1);
-    }
-    
-    /* Roll Number Hint */
-    .roll-hint {
-      margin-top: 15px;
-      padding: 10px;
-      background: #fff3cd;
-      border-radius: 8px;
-      border-left: 4px solid #ffc107;
-      font-size: 0.85rem;
-      color: #856404;
-    }
-    .roll-hint strong {
-      color: #b21f1f;
-    }
-    
-    /* Media Queries for Mobile */
-    @media (max-width: 768px) {
-      body { padding: 10px; }
-      .school-name { font-size:1.6rem; }
-      .header { padding:15px; }
-      .director-info { flex-direction:column; text-align:center; }
-      .director-photo { margin-right:0; margin-bottom:10px; }
-      .director-details { text-align:center; }
-      
-      /* Online test button mobile */
-      .online-test-btn {
-        width: 90%;
-        padding: 12px 25px;
-        font-size: 1rem;
-      }
-      
-      .results-list { grid-template-columns:1fr; }
-      
-      .marks-table { font-size:0.85rem; min-width:450px; }
-      .marks-table th, .marks-table td { padding:8px; }
-      
-      .action-buttons { flex-direction:column; }
-      .action-buttons button { width:100%; justify-content:center; }
-      
-      .about-list, .shayari-text { font-size:0.85rem; }
-      
-      /* Shayari section mobile */
-      .shayari-container {
-        grid-template-columns: 1fr;
-      }
-      
-      /* Developer contact mobile */
-      .contact-info {
-        flex-direction: column;
-        gap: 8px;
-      }
-      .contact-item {
-        padding: 6px 12px;
-      }
-      
-      /* Adjust PDF clone for mobile */
-      .pdf-clone {
-        padding: 15px;
-        margin: 10px;
-      }
-    }
-    
-    @media (max-width: 480px) {
-      .school-name { font-size:1.4rem; }
-      .section-title { font-size:1.3rem; }
-      .result-card { padding:15px; }
-      .marks-table { min-width:350px; }
-      .marks-table th, .marks-table td { padding:6px; font-size:0.8rem; }
-      .shayari-title { font-size: 1.4rem; }
-    }
-
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Point Coaching Centre - Admin Panel</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .section {
+            display: none;
+        }
+        .active {
+            display: block;
+        }
+        .subject-box {
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+        .student-row {
+            transition: all 0.3s;
+        }
+        .student-row:hover {
+            background-color: #f8f9fa;
+        }
+        .nav-btn {
+            margin: 5px;
+        }
+        .success-message {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        .coaching-name {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #198754; /* Green color for Study Point */
+            text-align: center;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .help-step {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-left: 4px solid #198754;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        .language-switch {
+            margin: 10px 0;
+        }
+        .simple-instruction {
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+        .simple-instruction:before {
+            content: "• ";
+            color: #198754;
+            font-weight: bold;
+        }
+        .fixed-help-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .published-toast {
+            background-color: #198754 !important;
+        }
+        .save-changes-btn {
+            background-color: #20c997;
+            border-color: #20c997;
+        }
+        .save-changes-btn:hover {
+            background-color: #1ba87e;
+            border-color: #1ba87e;
+        }
+        .btn-primary {
+            background-color: #198754;
+            border-color: #198754;
+        }
+        .btn-primary:hover {
+            background-color: #157347;
+            border-color: #146c43;
+        }
+        .text-primary {
+            color: #198754 !important;
+        }
+        .online-test-card {
+            border: 2px solid #198754 !important;
+        }
+        .online-test-card .card-body {
+            background-color: #e8f5e9;
+        }
+        /* Fee Management Card Style */
+        .fee-card {
+            border: 2px solid #198754 !important;
+        }
+        .fee-card .card-body {
+            background-color: #e8f5e9;
+        }
+    </style>
 </head>
-<body>
-  <!-- Admin Password Modal -->
-  <div class="admin-modal" id="admin-modal">
-    <div class="modal-content">
-      <h3>Admin Login</h3>
-      <p>Enter password to access admin panel:</p>
-      <input type="password" id="admin-password" placeholder="Enter password">
-      <div class="modal-buttons">
-        <button class="modal-btn submit" onclick="checkAdminPassword()">Submit</button>
-        <button class="modal-btn cancel" onclick="closeAdminModal()">Cancel</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Header -->
-  <div class="header">
-    <h1 class="school-name">STUDY POINT COACHING CENTRE</h1>
-    <p class="location">Muzaffarpur, Bihar</p>
-    <div class="director-info">
-      <div class="director-photo" onclick="openAdminModal()">
-        <img src="https://i.ibb.co/Q39yS2T4/logo.jpg">
-      </div>
-      <div class="director-details">
-        <h2>DIRECTOR</h2>
-        <h3>GUDDU KUMAR</h3>
-        <p><i class="fas fa-user-graduate"></i> B.Sc, B.Ed (CTET)</p>
-        <p><i class="fas fa-phone"></i> Call: +91 6202608202</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Online Test Button -->
-  <div class="online-test-container">
-    <a href="onlinetest.html" class="online-test-btn" target="_blank">
-      <i class="fas fa-laptop-code"></i> Online Test
-    </a>
-  </div>
-
-  <!-- Moving Notice Text -->
-  <div class="marquee-container" id="notice-container">
-    <div class="marquee-content" id="marquee-content">
-      <!-- Notice content will be loaded from Firebase -->
-    </div>
-  </div>
-
-  <!-- Results Section -->
-  <div class="results-section">
-    <h2 class="section-title">📊 Check Your Results</h2>
-    
-    <div class="loading" id="loading-results">
-      <i class="fas fa-spinner fa-spin"></i> Loading available results from database...
-    </div>
-    
-    <div class="results-list" id="results-list" style="display:none;"></div>
-    
-    <div class="roll-input-section" id="roll-input-section">
-      <h3 id="selected-exam-name">Enter your Roll Number</h3>
-      <div class="input-group">
-        <input type="number" id="roll-input" placeholder="Enter Roll Number">
-        <button class="result-btn" onclick="fetchStudentResult()">📑 Get Result</button>
-        <button class="result-btn" onclick="goBackToResults()" style="background:#666;">⬅ Back</button>
-      </div>
-      <!-- Roll Number Hint -->
-      <div class="roll-hint">
-        <strong>Note:</strong> Enter your roll number as provided by the coaching centre.
-      </div>
-    </div>
-    
-    <div class="result-card" id="result-card">
-      <div class="result-card-header">
-        <h2>STUDY POINT COACHING CENTRE, Muzaffarpur</h2>
-        <h3 id="result-exam-name">Exam Name</h3>
-        <p>Under the guidance of <strong>GUDDU KUMAR</strong> (B.Sc, B.Ed - CTET)</p>
-      </div>
-      
-      <div class="student-info">
-        <div class="info-row">
-          <span class="info-label">Student Name:</span>
-          <span class="info-value" id="result-student-name">-</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">Father's Name:</span>
-          <span class="info-value" id="result-father-name">-</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">Roll Number:</span>
-          <span class="info-value" id="result-roll-no">-</span>
-        </div>
-      </div>
-      
-      <table class="marks-table">
-        <thead>
-          <tr>
-            <th>Subject</th>
-            <th>Marks Obtained</th>
-            <th>Total Marks</th>
-            <th>Percentage</th>
-          </tr>
-        </thead>
-        <tbody id="marks-table-body">
-          <!-- Marks will be populated here -->
-        </tbody>
-      </table>
-      
-      <div class="percentage-display" id="total-percentage">
-        Total Percentage: 0%
-      </div>
-      
-      <div class="division-display" id="division-display">
-        Division: -
-      </div>
-      
-      <div class="coaching-mention">
-        <p>This result is published by STUDY POINT COACHING CENTRE, Muzaffarpur | Director: GUDDU KUMAR (B.Sc, B.Ed - CTET)</p>
-        <p>For any queries, contact: +91 6202608202</p>
-      </div>
-      
-      <div class="action-buttons">
-        <button class="download-btn" onclick="downloadResultAsPDF()">
-          <i class="fas fa-download"></i> Download Result PDF
+<body class="bg-light">
+    <div class="container mt-4">
+        <!-- Fixed Help Button -->
+        <button class="btn btn-primary fixed-help-btn" id="helpButton" title="Help / मदद">
+            ?
         </button>
-        <button class="back-btn" onclick="goBackToResults()">
-          <i class="fas fa-arrow-left"></i> Back to Results
-        </button>
-      </div>
+
+        <!-- Teacher Dashboard -->
+        <div id="dashboardSection" class="section active">
+            <div class="row">
+                <div class="col-12">
+                    <!-- Coaching Centre Name -->
+                    <div class="coaching-name">
+                        STUDY POINT COACHING CENTRE
+                    </div>
+                    
+                    <!-- Dashboard Cards - First Row (3 cards) -->
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h5 class="card-title">Create Result</h5>
+                                    <p class="card-text">Create a new exam result</p>
+                                    <button id="createResultBtn" class="btn btn-primary">Go</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h5 class="card-title">Draft Results</h5>
+                                    <p class="card-text">View and edit draft results</p>
+                                    <button id="draftResultsBtn" class="btn btn-warning">Go</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h5 class="card-title">Published Results</h5>
+                                    <p class="card-text">View published results</p>
+                                    <button id="oldResultsBtn" class="btn btn-info">Go</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card text-center online-test-card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Online Tests</h5>
+                                    <p class="card-text">Create and manage online tests</p>
+                                    <button id="onlineTestsBtn" class="btn btn-success">Go</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NEW ROW: Fee Management Card -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3 mx-auto">
+                            <div class="card text-center fee-card">
+                                <div class="card-body">
+                                    <h5 class="card-title">💰 Fee Management System</h5>
+                                    <p class="card-text">Manage student fees, add students, update payments, generate invoices</p>
+                                    <button id="feeManagementBtn" class="btn btn-primary" style="background-color: #198754; border-color: #198754;">📊 Go to Fee Dashboard</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Create Result Section -->
+        <div id="createResultSection" class="section">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Create Result</h2>
+                <div>
+                    <button id="backToDashboardBtn" class="btn btn-secondary">Back to Dashboard</button>
+                </div>
+            </div>
+            
+            <!-- Step 1: Exam Setup -->
+            <div id="examSetupStep">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Step 1: Exam Setup</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="examName" class="form-label">Exam Name</label>
+                            <input type="text" class="form-control" id="examName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="subjectCount" class="form-label">Number of Subjects</label>
+                            <input type="number" class="form-control" id="subjectCount" min="1" required>
+                        </div>
+                        <button id="generateSubjectFieldsBtn" class="btn btn-primary">Generate Subject Fields</button>
+                    </div>
+                </div>
+                
+                <div id="subjectFields" class="mb-4"></div>
+                
+                <div id="step1NextBtn" class="d-none">
+                    <button id="nextToStudentEntryBtn" class="btn btn-success">Next</button>
+                </div>
+            </div>
+            
+            <!-- Step 2: Student Marks Entry -->
+            <div id="studentEntryStep" class="d-none">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Step 2: Student Marks Entry</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <label for="rollNo" class="form-label">Roll No</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="rollNo" min="1" value="1">
+                                    <button class="btn btn-outline-secondary" type="button" id="incrementRollBtn">+</button>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="studentName" class="form-label">Student Name</label>
+                                <input type="text" class="form-control" id="studentName" required>
+                            </div>
+                            <div class="col-md-5 mb-3">
+                                <label for="fatherName" class="form-label">Father Name (Optional)</label>
+                                <input type="text" class="form-control" id="fatherName">
+                            </div>
+                        </div>
+                        
+                        <div id="marksFields" class="mb-3"></div>
+                        
+                        <div class="d-flex gap-2">
+                            <button id="addStudentBtn" class="btn btn-primary">Add Student</button>
+                            <button id="updateStudentBtn" class="btn btn-warning d-none">Update Student</button>
+                            <button id="cancelEditBtn" class="btn btn-secondary d-none">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Students List</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Roll No</th>
+                                        <th>Name</th>
+                                        <th>Father Name</th>
+                                        <th>Marks</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="studentsTableBody">
+                                    <!-- Student rows will be added here dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="d-flex gap-2 mt-3">
+                            <button id="saveDraftBtn" class="btn btn-warning">Save as Draft</button>
+                            <button id="saveChangesBtn" class="btn save-changes-btn d-none">Save Changes</button>
+                            <button id="publishResultBtn" class="btn btn-success">Publish Result</button>
+                            <button id="dontSaveBtn" class="btn btn-secondary d-none">Don't Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Draft Results Section -->
+        <div id="draftResultsSection" class="section">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Draft Results</h2>
+                <button id="backToDashboardBtn2" class="btn btn-secondary">Back to Dashboard</button>
+            </div>
+            
+            <div id="draftResultsList" class="row">
+                <!-- Draft results will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Published Results Section -->
+        <div id="oldResultsSection" class="section">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Published Results</h2>
+                <button id="backToDashboardBtn3" class="btn btn-secondary">Back to Dashboard</button>
+            </div>
+            
+            <div id="oldResultsList" class="row">
+                <!-- Old results will be loaded here -->
+            </div>
+        </div>
     </div>
-  </div>
 
-  <!-- Coaching Promotion Section -->
-  <div class="promotion-section">
-    <h3>About Us</h3>
-    <ol class="about-list" id="about-list">
-      <!-- About lines will be loaded from Firebase -->
-    </ol>
-  </div>
-
-  <!-- Motivational Shayari Section -->
-  <div class="shayari-section">
-    <h2 class="shayari-title">💫 मोटिवेशनल शायरी 💫</h2>
-    <div class="shayari-container">
-      <div class="shayari-card">
-        <div class="shayari-text">जो चल पड़े हैं मंजिल की तरफ, उनकी राह आसान हो जाती है, थोड़ा संघर्ष कर लो दोस्तों, फिर जिंदगी खुशियों से भर जाती है।</div>
-        <div class="shayari-author">- Guddu Sir, STUDY POINT Coaching</div>
-      </div>
-      <div class="shayari-card">
-        <div class="shayari-text">पढ़ाई की राह में आए जो भी संकट, उनसे डर कर ना हारो कभी, हौसला बुलंद रखो अपना, सफलता तुम्हारे कदम चूमेगी।</div>
-        <div class="shayari-author">- Guddu Sir, STUDY POINT Coaching</div>
-      </div>
-      <div class="shayari-card">
-        <div class="shayari-text">किताबें हैं तुम्हारी सच्ची दोस्त, ज्ञान है तुम्हारा हथियार, आज की मेहनत ही कल का, तुम्हारा भविष्य संवारेगी।</div>
-        <div class="shayari-author">- Guddu Sir, STUDY POINT Coaching</div>
-      </div>
-      <div class="shayari-card">
-        <div class="shayari-text">सुबह जल्दी उठने वाले की, किस्मत भी जल्दी मुस्कुराती है, पढ़ाई में लगन रखो तुम, सफलता स्वयं चलकर आती है।</div>
-        <div class="shayari-author">- Guddu Sir, STUDY POINT Coaching</div>
-      </div>
-      <div class="shayari-card">
-        <div class="shayari-text">अंधेरा चाहे कितना भी गहरा हो, सुबह होकर रहती है, थोड़ा और प्रयास कर लो, सफलता मिलकर रहती है।</div>
-        <div class="shayari-author">- Guddu Sir, STUDY POINT Coaching</div>
-      </div>
-      <div class="shayari-card">
-        <div class="shayari-text">नदी रुकती नहीं चट्टानों से, झरने रुकते नहीं पत्थरों से, तुम भी रुकना ना मुश्किलों से, सपने पूरे करो अपने।</div>
-        <div class="shayari-author">- Guddu Sir, STUDY POINT Coaching</div>
-      </div>
-      <div class="shayari-card">
-        <div class="shayari-text">जिंदगी की परीक्षा में पास होना है, तो आज से ही मेहनत शुरू कर दो, समय बीत जाएगा चुपचाप, फिर पछताने से कुछ नहीं मिलेगा।</div>
-        <div class="shayari-author">- Guddu Sir, STUDY POINT Coaching</div>
-      </div>
+    <!-- Help Modal -->
+    <div class="modal fade" id="helpModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="helpModalLabel">How to Use - मदद</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Language Switch -->
+                    <div class="language-switch text-center mb-3">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-outline-primary active" id="englishHelpBtn">English</button>
+                            <button type="button" class="btn btn-outline-primary" id="hindiHelpBtn">हिंदी</button>
+                        </div>
+                    </div>
+                    
+                    <!-- English Instructions -->
+                    <div id="englishInstructions">
+                        <h6 class="text-primary">Step 1: Make New Result</h6>
+                        <div class="help-step">
+                            <div class="simple-instruction">Click "Create Result" button</div>
+                            <div class="simple-instruction">Type exam name (like "Final Exam")</div>
+                            <div class="simple-instruction">Type how many subjects (like 5, 6, 7)</div>
+                            <div class="simple-instruction">Click "Generate Subject Fields" button</div>
+                            <div class="simple-instruction">Type subject names (like Math, Science)</div>
+                            <div class="simple-instruction">Type total marks for each subject</div>
+                            <div class="simple-instruction">Click "Next" button</div>
+                        </div>
+                        
+                        <h6 class="text-primary mt-4">Step 2: Add Students</h6>
+                        <div class="help-step">
+                            <div class="simple-instruction">Roll number will start from 1</div>
+                            <div class="simple-instruction">Type student name</div>
+                            <div class="simple-instruction">Type father name (if you want)</div>
+                            <div class="simple-instruction">Type marks for each subject</div>
+                            <div class="simple-instruction">Click "Add Student" button</div>
+                            <div class="simple-instruction">For next student, click "+" button for roll number</div>
+                            <div class="simple-instruction">Repeat for all students</div>
+                        </div>
+                        
+                        <h6 class="text-primary mt-4">Step 3: Save or Publish</h6>
+                        <div class="help-step">
+                            <div class="simple-instruction">"Save as Draft": Save for later changes</div>
+                            <div class="simple-instruction">"Publish Result": Make result final</div>
+                            <div class="simple-instruction">Before publish, you can edit/delete students</div>
+                            <div class="simple-instruction">To edit student: Click "Edit" button</div>
+                            <div class="simple-instruction">To delete student: Click "Delete" button</div>
+                        </div>
+                        
+                        <h6 class="text-primary mt-4">Step 4: Manage Results</h6>
+                        <div class="help-step">
+                            <div class="simple-instruction">"Draft Results": See saved results for editing</div>
+                            <div class="simple-instruction">"Published Results": See published results</div>
+                            <div class="simple-instruction">From drafts: You can edit or delete</div>
+                            <div class="simple-instruction">From published: You can view, edit or delete</div>
+                            <div class="simple-instruction">"View" button: See full result</div>
+                            <div class="simple-instruction">"Edit" button: Make changes to result</div>
+                        </div>
+                        
+                        <h6 class="text-primary mt-4">Online Tests</h6>
+                        <div class="help-step">
+                            <div class="simple-instruction">"Online Tests" button: Opens a new page for online tests</div>
+                            <div class="simple-instruction">Create and manage online tests for students</div>
+                            <div class="simple-instruction">Separate page for test management</div>
+                        </div>
+                        
+                        <h6 class="text-primary mt-4">Fee Management</h6>
+                        <div class="help-step">
+                            <div class="simple-instruction">"Fee Management System" button: Opens fee dashboard</div>
+                            <div class="simple-instruction">Add students, update fees, generate invoices</div>
+                            <div class="simple-instruction">Track payments and due amounts</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Hindi Instructions -->
+                    <div id="hindiInstructions" style="display: none;">
+                        <h6 class="text-primary">चरण 1: नया रिजल्ट बनाएं</h6>
+                        <div class="help-step">
+                            <div class="simple-instruction">"Create Result" बटन पर क्लिक करें</div>
+                            <div class="simple-instruction">परीक्षा का नाम टाइप करें (जैसे "फाइनल एग्जाम")</div>
+                            <div class="simple-instruction">कितने विषय हैं टाइप करें (जैसे 5, 6, 7)</div>
+                            <div class="simple-instruction">"Generate Subject Fields" बटन पर क्लिक करें</div>
+                            <div class="simple-instruction">विषयों के नाम टाइप करें (जैसे गणित, विज्ञान)</div>
+                            <div class="simple-instruction">हर विषय के कुल अंक टाइप करें</div>
+                            <div class="simple-instruction">"Next" बटन पर क्लिक करें</div>
+                        </div>
+                        
+                        <h6 class="text-primary mt-4">चरण 2: छात्र जोड़ें</h6>
+                        <div class="help-step">
+                            <div class="simple-instruction">रोल नंबर 1 से शुरू होगा</div>
+                            <div class="simple-instruction">छात्र का नाम टाइप करें</div>
+                            <div class="simple-instruction">पिता का नाम टाइप करें (अगर चाहें)</div>
+                            <div class="simple-instruction">हर विषय के अंक टाइप करें</div>
+                            <div class="simple-instruction">"Add Student" बटन पर क्लिक करें</div>
+                            <div class="simple-instruction">अगले छात्र के लिए, रोल नंबर के "+" बटन पर क्लिक करें</div>
+                            <div class="simple-instruction">सभी छात्रों के लिए दोहराएं</div>
+                        </div>
+                        
+                        <h6 class="text-primary mt-4">चरण 3: सेव या प्रकाशित करें</h6>
+                        <div class="help-step">
+                            <div class="simple-instruction">"Save as Draft": बाद में बदलाव के लिए सेव करें</div>
+                            <div class="simple-instruction">"Publish Result": रिजल्ट को अंतिम बनाएं</div>
+                            <div class="simple-instruction">प्रकाशित करने से पहले, छात्रों को एडिट/डिलीट कर सकते हैं</div>
+                            <div class="simple-instruction">छात्र एडिट करने के लिए: "Edit" बटन पर क्लिक करें</div>
+                            <div class="simple-instruction">छात्र डिलीट करने के लिए: "Delete" बटन पर क्लिक करें</div>
+                        </div>
+                        
+                        <h6 class="text-primary mt-4">चरण 4: रिजल्ट प्रबंधित करें</h6>
+                        <div class="help-step">
+                            <div class="simple-instruction">"Draft Results": एडिटिंग के लिए सेव किए रिजल्ट देखें</div>
+                            <div class="simple-instruction">"Published Results": प्रकाशित रिजल्ट देखें</div>
+                            <div class="simple-instruction">ड्राफ्ट से: आप एडिट या डिलीट कर सकते हैं</div>
+                            <div class="simple-instruction">प्रकाशित से: आप देख, एडिट या डिलीट कर सकते हैं</div>
+                            <div class="simple-instruction">"View" बटन: पूरा रिजल्ट देखें</div>
+                            <div class="simple-instruction">"Edit" बटन: रिजल्ट में बदलाव करें</div>
+                        </div>
+                        
+                        <h6 class="text-primary mt-4">ऑनलाइन टेस्ट</h6>
+                        <div class="help-step">
+                            <div class="simple-instruction">"Online Tests" बटन: ऑनलाइन टेस्ट के लिए नया पेज खोलता है</div>
+                            <div class="simple-instruction">छात्रों के लिए ऑनलाइन टेस्ट बनाएं और प्रबंधित करें</div>
+                            <div class="simple-instruction">टेस्ट प्रबंधन के लिए अलग पेज</div>
+                        </div>
+                        
+                        <h6 class="text-primary mt-4">फीस प्रबंधन</h6>
+                        <div class="help-step">
+                            <div class="simple-instruction">"Fee Management System" बटन: फीस डैशबोर्ड खोलता है</div>
+                            <div class="simple-instruction">छात्र जोड़ें, फीस अपडेट करें, इनवॉइस बनाएं</div>
+                            <div class="simple-instruction">भुगतान और बकाया राशि ट्रैक करें</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <!-- Developer Contact Section -->
-  <div class="developer-contact">
-    <h3><i class="fas fa-laptop-code"></i> Website Developed By</h3>
-    <p>For similar website development contact:</p>
-    <div class="contact-info">
-      <div class="contact-item">
-        <i class="fas fa-phone"></i>
-        <span>8580594404</span>
-      </div>
-      <div class="contact-item">
-        <i class="fas fa-envelope"></i>
-        <span>kk5674010@gmail.com</span>
-      </div>
+    <!-- Result View Modal -->
+    <div class="modal fade" id="resultModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="resultModalTitle">Result Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="resultDetails">
+                        <!-- Result details will be loaded here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <!-- Footer -->
-  <div class="footer">
-    <p>&copy; 2023 STUDY POINT COACHING CENTRE. All Rights Reserved.</p>
-  </div>
+    <!-- Confirmation Modal for Editing Published Result -->
+    <div class="modal fade" id="editPublishedConfirmModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Edit</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>You are editing a published result. What would you like to do?</p>
+                    <div class="alert alert-info">
+                        <strong>Note:</strong> 
+                        <ul class="mb-0">
+                            <li><strong>Save Changes:</strong> Update the existing result directly</li>
+                            <li><strong>Don't Save:</strong> Go back without saving changes</li>
+                            <li><strong>Save as Draft:</strong> Save changes as a new draft</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="dontSaveConfirmBtn" data-bs-dismiss="modal">Don't Save</button>
+                    <button type="button" class="btn btn-warning" id="saveDraftConfirmBtn" data-bs-dismiss="modal">Save as Draft</button>
+                    <button type="button" class="btn save-changes-btn" id="saveChangesConfirmBtn" data-bs-dismiss="modal">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-  <!-- PDF Clone Container (Hidden) -->
-  <div id="pdf-clone-container" class="pdf-clone-container"></div>
+    <!-- Success Message Toasts -->
+    <div id="successToast" class="toast align-items-center text-bg-success border-0 success-message" role="alert">
+        <div class="d-flex">
+            <div class="toast-body" id="toastMessage">
+                Successfully Saved!
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
 
-  <!-- JavaScript Code -->
-  <script>
-    // Firebase Configuration - Updated for STUDY POINT COACHING
-    const firebaseConfig = {
-      apiKey: "AIzaSyBDN5ATO_LQ-3THveZDGyvLjtjjavgTIJk",
-      authDomain: "study-point-coaching-centre.firebaseapp.com",
-      projectId: "study-point-coaching-centre",
-      storageBucket: "study-point-coaching-centre.firebasestorage.app",
-      messagingSenderId: "1044456595909",
-      appId: "1:1044456595909:web:ca77701e20483dc640abac"
-    };
+    <!-- Published Success Toast -->
+    <div id="publishedToast" class="toast align-items-center text-bg-success border-0 success-message published-toast" role="alert" style="display: none;">
+        <div class="d-flex">
+            <div class="toast-body">
+                Result Published Successfully! ✓
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
 
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+        import { 
+            getFirestore, 
+            collection, 
+            addDoc, 
+            getDocs, 
+            doc, 
+            updateDoc, 
+            deleteDoc, 
+            query, 
+            orderBy,
+            serverTimestamp,
+            where
+        } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
-    // Global variables
-    let allResults = [];
-    let selectedExamId = null;
-    let selectedExamData = null;
-    let currentStudentResult = null;
-    let newResults = []; // Track which results are "new"
-    let viewedResults = []; // Track which results have been viewed
+        // Firebase configuration - STUDY POINT COACHING
+        const firebaseConfig = {
+            apiKey: "AIzaSyBDN5ATO_LQ-3THveZDGyvLjtjjavgTIJk",
+            authDomain: "study-point-coaching-centre.firebaseapp.com",
+            projectId: "study-point-coaching-centre",
+            storageBucket: "study-point-coaching-centre.firebasestorage.app",
+            messagingSenderId: "1044456595909",
+            appId: "1:1044456595909:web:ca77701e20483dc640abac"
+        };
 
-    // Admin password (updated as requested)
-    const ADMIN_PASSWORD = "342523";
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
-    // Load viewed results from localStorage
-    function loadViewedResults() {
-      const stored = localStorage.getItem('study_viewed_results');
-      viewedResults = stored ? JSON.parse(stored) : [];
-    }
+        // DOM Elements
+        const dashboardSection = document.getElementById('dashboardSection');
+        const createResultSection = document.getElementById('createResultSection');
+        const draftResultsSection = document.getElementById('draftResultsSection');
+        const oldResultsSection = document.getElementById('oldResultsSection');
+        
+        const createResultBtn = document.getElementById('createResultBtn');
+        const draftResultsBtn = document.getElementById('draftResultsBtn');
+        const oldResultsBtn = document.getElementById('oldResultsBtn');
+        const onlineTestsBtn = document.getElementById('onlineTestsBtn');
+        const feeManagementBtn = document.getElementById('feeManagementBtn'); // NEW BUTTON
+        
+        const backToDashboardBtn = document.getElementById('backToDashboardBtn');
+        const backToDashboardBtn2 = document.getElementById('backToDashboardBtn2');
+        const backToDashboardBtn3 = document.getElementById('backToDashboardBtn3');
+        
+        // Help Elements
+        const helpButton = document.getElementById('helpButton');
+        const helpModal = new bootstrap.Modal(document.getElementById('helpModal'));
+        const englishHelpBtn = document.getElementById('englishHelpBtn');
+        const hindiHelpBtn = document.getElementById('hindiHelpBtn');
+        const englishInstructions = document.getElementById('englishInstructions');
+        const hindiInstructions = document.getElementById('hindiInstructions');
+        
+        // Create Result Elements
+        const examSetupStep = document.getElementById('examSetupStep');
+        const studentEntryStep = document.getElementById('studentEntryStep');
+        const examNameInput = document.getElementById('examName');
+        const subjectCountInput = document.getElementById('subjectCount');
+        const generateSubjectFieldsBtn = document.getElementById('generateSubjectFieldsBtn');
+        const subjectFields = document.getElementById('subjectFields');
+        const step1NextBtn = document.getElementById('step1NextBtn');
+        const nextToStudentEntryBtn = document.getElementById('nextToStudentEntryBtn');
+        
+        const rollNoInput = document.getElementById('rollNo');
+        const incrementRollBtn = document.getElementById('incrementRollBtn');
+        const studentNameInput = document.getElementById('studentName');
+        const fatherNameInput = document.getElementById('fatherName');
+        const marksFields = document.getElementById('marksFields');
+        const addStudentBtn = document.getElementById('addStudentBtn');
+        const updateStudentBtn = document.getElementById('updateStudentBtn');
+        const cancelEditBtn = document.getElementById('cancelEditBtn');
+        const studentsTableBody = document.getElementById('studentsTableBody');
+        const saveDraftBtn = document.getElementById('saveDraftBtn');
+        const saveChangesBtn = document.getElementById('saveChangesBtn');
+        const publishResultBtn = document.getElementById('publishResultBtn');
+        const dontSaveBtn = document.getElementById('dontSaveBtn');
+        
+        // Draft and Old Results Elements
+        const draftResultsList = document.getElementById('draftResultsList');
+        const oldResultsList = document.getElementById('oldResultsList');
+        
+        // Modal Elements
+        const resultModal = new bootstrap.Modal(document.getElementById('resultModal'));
+        const resultModalTitle = document.getElementById('resultModalTitle');
+        const resultDetails = document.getElementById('resultDetails');
+        
+        // Confirmation Modal Elements
+        const editPublishedConfirmModal = new bootstrap.Modal(document.getElementById('editPublishedConfirmModal'));
+        const dontSaveConfirmBtn = document.getElementById('dontSaveConfirmBtn');
+        const saveDraftConfirmBtn = document.getElementById('saveDraftConfirmBtn');
+        const saveChangesConfirmBtn = document.getElementById('saveChangesConfirmBtn');
+        
+        // Toast Elements
+        const successToast = new bootstrap.Toast(document.getElementById('successToast'));
+        const publishedToast = new bootstrap.Toast(document.getElementById('publishedToast'));
+        const toastMessage = document.getElementById('toastMessage');
+        
+        // App State
+        let subjects = [];
+        let students = [];
+        let editingStudentIndex = null;
+        let editingDraftId = null;
+        let isEditingPublishedResult = false;
+        let editingPublishedResultId = null;
+        let hasChanges = false;
 
-    // Save viewed results to localStorage
-    function saveViewedResults() {
-      localStorage.setItem('study_viewed_results', JSON.stringify(viewedResults));
-    }
+        // Directly show dashboard (no login required)
+        showSection(dashboardSection);
 
-    // Mark a result as viewed
-    function markResultAsViewed(resultId) {
-      if (!viewedResults.includes(resultId)) {
-        viewedResults.push(resultId);
-        saveViewedResults();
-      }
-    }
-
-    // Check if a result is "new" (not viewed yet)
-    function isResultNew(resultId) {
-      return !viewedResults.includes(resultId);
-    }
-
-    // Open admin modal
-    function openAdminModal() {
-      document.getElementById('admin-modal').style.display = 'flex';
-    }
-
-    // Close admin modal
-    function closeAdminModal() {
-      document.getElementById('admin-modal').style.display = 'none';
-      document.getElementById('admin-password').value = '';
-    }
-
-    // Check admin password
-    function checkAdminPassword() {
-      const password = document.getElementById('admin-password').value;
-      if (password === ADMIN_PASSWORD) {
-        window.location.href = "admin.html";
-      } else {
-        alert("Incorrect password! Please try again.");
-        document.getElementById('admin-password').value = '';
-        document.getElementById('admin-password').focus();
-      }
-    }
-
-    // Fetch notice from Firebase
-    async function fetchNotice() {
-      try {
-        const noticeSnapshot = await db.collection("notices").orderBy("timestamp", "desc").limit(1).get();
-        if (!noticeSnapshot.empty) {
-          const noticeData = noticeSnapshot.docs[0].data();
-          const noticeText = noticeData.text || "📚 Admission is going on for 6th to 12th & Competitive Exams";
-          
-          // Create marquee content
-          let marqueeHTML = '';
-          for (let i = 0; i < 5; i++) {
-            marqueeHTML += `<span>${noticeText} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>`;
-          }
-          document.getElementById('marquee-content').innerHTML = marqueeHTML;
-        } else {
-          // Default notice if no notice in Firebase
-          const defaultNotice = "📚 Admission is going on for 6th to 12th & Competitive Exams";
-          let marqueeHTML = '';
-          for (let i = 0; i < 5; i++) {
-            marqueeHTML += `<span>${defaultNotice} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>`;
-          }
-          document.getElementById('marquee-content').innerHTML = marqueeHTML;
+        // Vibration function
+        function vibrateButton() {
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
         }
-      } catch (error) {
-        console.error("Error fetching notice:", error);
-        // Fallback to default notice
-        const defaultNotice = "📚 Admission is going on for 6th to 12th & Competitive Exams";
-        let marqueeHTML = '';
-        for (let i = 0; i < 5; i++) {
-          marqueeHTML += `<span>${defaultNotice} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>`;
-        }
-        document.getElementById('marquee-content').innerHTML = marqueeHTML;
-      }
-    }
 
-    // Fetch about lines from Firebase
-    async function fetchAboutLines() {
-      try {
-        const aboutSnapshot = await db.collection("about").orderBy("order").get();
-        if (!aboutSnapshot.empty) {
-          let aboutHTML = '';
-          aboutSnapshot.forEach(doc => {
-            const aboutData = doc.data();
-            aboutHTML += `<li>${aboutData.text}</li>`;
-          });
-          document.getElementById('about-list').innerHTML = aboutHTML;
-        } else {
-          // Default about lines if none in Firebase
-          const defaultAboutLines = [
-            "STUDY POINT COACHING CENTRE एक भरोसेमंद और गुणवत्तापूर्ण शिक्षा देने वाला संस्थान है।",
-            "यहाँ पढ़ाई आसान भाषा में और पूरी मेहनत के साथ कराई जाती है।",
-            "अनुभवी शिक्षक हर छात्र पर व्यक्तिगत ध्यान देते हैं।",
-            "नियमित टेस्ट और अभ्यास से छात्रों की तैयारी मजबूत की जाती है।",
-            "कमजोर छात्रों के लिए विशेष मार्गदर्शन दिया जाता है।",
-            "अनुशासित वातावरण में पढ़ाई होने से परिणाम बेहतर आते हैं।",
-            "लक्ष्य-आधारित पढ़ाई से छात्रों का आत्मविश्वास बढ़ता है।",
-            "यहाँ शिक्षा के साथ संस्कार और मेहनत का महत्व सिखाया जाता है।"
-          ];
-          
-          let aboutHTML = '';
-          defaultAboutLines.forEach((line, index) => {
-            aboutHTML += `<li>${line}</li>`;
-          });
-          document.getElementById('about-list').innerHTML = aboutHTML;
-        }
-      } catch (error) {
-        console.error("Error fetching about lines:", error);
-        // Fallback to default about lines
-        const defaultAboutLines = [
-          "STUDY POINT COACHING CENTRE एक भरोसेमंद और गुणवत्तापूर्ण शिक्षा देने वाला संस्थान है।",
-          "यहाँ पढ़ाई आसान भाषा में और पूरी मेहनत के साथ कराई जाती है।",
-          "अनुभवी शिक्षक हर छात्र पर व्यक्तिगत ध्यान देते हैं।",
-          "नियमित टेस्ट और अभ्यास से छात्रों की तैयारी मजबूत की जाती है।",
-          "कमजोर छात्रों के लिए विशेष मार्गदर्शन दिया जाता है।",
-          "अनुशासित वातावरण में पढ़ाई होने से परिणाम बेहतर आते हैं।",
-          "लक्ष्य-आधारित पढ़ाई से छात्रों का आत्मविश्वास बढ़ता है।",
-          "यहाँ शिक्षा के साथ संस्कार और मेहनत का महत्व सिखाया जाता है।"
+        // Add click vibration to important buttons only
+        const importantButtons = [
+            createResultBtn, draftResultsBtn, oldResultsBtn, onlineTestsBtn, feeManagementBtn, helpButton,
+            generateSubjectFieldsBtn, nextToStudentEntryBtn, addStudentBtn,
+            updateStudentBtn, saveDraftBtn, publishResultBtn, saveChangesBtn
         ];
         
-        let aboutHTML = '';
-        defaultAboutLines.forEach((line, index) => {
-          aboutHTML += `<li>${line}</li>`;
+        importantButtons.forEach(btn => {
+            if (btn) btn.addEventListener('click', vibrateButton);
         });
-        document.getElementById('about-list').innerHTML = aboutHTML;
-      }
-    }
 
-    // Fetch all results from Firestore (results collection)
-    async function fetchAllResults() {
-      try {
-        loadViewedResults(); // Load previously viewed results
-        
-        const querySnapshot = await db.collection("results").get();
-        allResults = [];
-        newResults = []; // Reset new results array
-        
-        if (querySnapshot.empty) {
-          document.getElementById("loading-results").innerHTML = 
-            '<div class="error">No results available at the moment. Please check back later.</div>';
-          return;
-        }
-        
-        querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          const resultId = doc.id;
-          const isNew = isResultNew(resultId);
-          
-          if (isNew) {
-            newResults.push(resultId);
-          }
-          
-          allResults.push({
-            id: resultId,
-            examName: data.examName || "Unnamed Exam",
-            createdAt: data.createdAt ? new Date(data.createdAt.toDate()).toLocaleDateString('en-IN', {
-              day: 'numeric',
-              month: 'long',
-              year: 'numeric'
-            }) : "Date not available",
-            data: data,
-            isNew: isNew
-          });
+        // Help Button Click Handler
+        helpButton.addEventListener('click', () => {
+            helpModal.show();
+        });
+
+        // Language Switch Handlers (Help Modal)
+        englishHelpBtn.addEventListener('click', () => {
+            englishInstructions.style.display = 'block';
+            hindiInstructions.style.display = 'none';
+            englishHelpBtn.classList.add('active');
+            hindiHelpBtn.classList.remove('active');
         });
         
-        // Sort by date (newest first)
-        allResults.sort((a, b) => {
-          return (b.data.createdAt?.toDate() || 0) - (a.data.createdAt?.toDate() || 0);
+        hindiHelpBtn.addEventListener('click', () => {
+            englishInstructions.style.display = 'none';
+            hindiInstructions.style.display = 'block';
+            englishHelpBtn.classList.remove('active');
+            hindiHelpBtn.classList.add('active');
+        });
+
+        // Navigation Handlers
+        createResultBtn.addEventListener('click', () => {
+            resetCreateResultForm();
+            showSection(createResultSection);
         });
         
-        displayResultsList();
-      } catch (error) {
-        console.error("Error fetching results:", error);
-        document.getElementById("loading-results").innerHTML = 
-          '<div class="error">Error loading results. Please check your internet connection and try again.</div>';
-      }
-    }
-
-    // Display results list
-    function displayResultsList() {
-      const resultsList = document.getElementById("results-list");
-      const loading = document.getElementById("loading-results");
-      
-      if (allResults.length === 0) {
-        loading.innerHTML = '<div class="error">No results available at the moment.</div>';
-        return;
-      }
-      
-      loading.style.display = "none";
-      resultsList.style.display = "grid";
-      
-      let html = "";
-      allResults.forEach((result, index) => {
-        const newSticker = result.isNew ? '<div class="new-sticker">NEW</div>' : '';
-        html += `
-          <div class="result-item" onclick="selectExam('${result.id}', ${index})" id="result-item-${index}">
-            ${newSticker}
-            <div class="exam-name">${result.examName}</div>
-            <div class="exam-date">📅 Published: ${result.createdAt}</div>
-          </div>
-        `;
-      });
-      
-      resultsList.innerHTML = html;
-    }
-
-    // Select an exam
-    function selectExam(examId, index) {
-      selectedExamId = examId;
-      selectedExamData = allResults[index].data;
-      
-      // Mark this result as viewed (remove NEW sticker)
-      markResultAsViewed(examId);
-      
-      // Update the result item to remove NEW sticker
-      const resultItem = document.getElementById(`result-item-${index}`);
-      if (resultItem) {
-        const newSticker = resultItem.querySelector('.new-sticker');
-        if (newSticker) {
-          newSticker.remove();
-        }
-      }
-      
-      // Highlight selected item
-      document.querySelectorAll('.result-item').forEach(item => {
-        item.classList.remove('active');
-      });
-      document.getElementById(`result-item-${index}`).classList.add('active');
-      
-      // Show roll number input section
-      document.getElementById('selected-exam-name').textContent = 
-        `Enter your Roll Number for: ${selectedExamData.examName}`;
-      document.getElementById('results-list').style.display = 'none';
-      document.getElementById('roll-input-section').style.display = 'block';
-      document.getElementById('result-card').style.display = 'none';
-      
-      // Clear previous input
-      document.getElementById('roll-input').value = '';
-    }
-
-    // Go back to results list
-    function goBackToResults() {
-      document.getElementById('results-list').style.display = 'grid';
-      document.getElementById('roll-input-section').style.display = 'none';
-      document.getElementById('result-card').style.display = 'none';
-      selectedExamId = null;
-      selectedExamData = null;
-      currentStudentResult = null;
-      
-      // Remove active class
-      document.querySelectorAll('.result-item').forEach(item => {
-        item.classList.remove('active');
-      });
-    }
-
-    // Calculate division based on percentage
-    function calculateDivision(percentage) {
-      if (percentage >= 60) {
-        return {
-          division: "FIRST DIVISION",
-          color: "#28a745",
-          bgColor: "#d4edda"
-        };
-      } else if (percentage >= 45) {
-        return {
-          division: "SECOND DIVISION",
-          color: "#17a2b8",
-          bgColor: "#d1ecf1"
-        };
-      } else if (percentage >= 30) {
-        return {
-          division: "THIRD DIVISION",
-          color: "#ffc107",
-          bgColor: "#fff3cd"
-        };
-      } else {
-        return {
-          division: "FAIL",
-          color: "#dc3545",
-          bgColor: "#f8d7da"
-        };
-      }
-    }
-
-    // Fetch student result
-    function fetchStudentResult() {
-      const rollInput = document.getElementById('roll-input').value.trim();
-      
-      if (!rollInput) {
-        alert("Please enter your roll number");
-        return;
-      }
-      
-      if (!selectedExamData || !selectedExamData.students) {
-        alert("Exam data not loaded properly. Please go back and select again.");
-        return;
-      }
-      
-      // Find student by roll number
-      const student = selectedExamData.students.find(s => s.rollNo == rollInput);
-      
-      if (!student) {
-        alert("Roll number not found in this exam. Please check your roll number and try again.");
-        return;
-      }
-      
-      // Display result
-      displayStudentResult(student);
-    }
-
-    // Display student result
-    function displayStudentResult(student) {
-      currentStudentResult = student;
-      
-      // Hide input section, show result card
-      document.getElementById('roll-input-section').style.display = 'none';
-      const resultCard = document.getElementById('result-card');
-      resultCard.style.display = 'block';
-      
-      // Set exam info
-      document.getElementById('result-exam-name').textContent = selectedExamData.examName;
-      
-      // Set student info
-      document.getElementById('result-student-name').textContent = student.name || "-";
-      document.getElementById('result-father-name').textContent = student.fatherName || "-";
-      document.getElementById('result-roll-no').textContent = student.rollNo || "-";
-      
-      // Calculate and display marks
-      const marksTable = document.getElementById('marks-table-body');
-      let html = '';
-      let totalObtained = 0;
-      let totalPossible = 0;
-      
-      if (student.marks && selectedExamData.subjects) {
-        // Loop through subjects from exam data
-        selectedExamData.subjects.forEach(subject => {
-          const subjectName = subject.name;
-          const subjectTotal = subject.total || 100;
-          const marksObtained = student.marks[subjectName] || 0;
-          const percentage = ((marksObtained / subjectTotal) * 100).toFixed(2);
-          
-          html += `
-            <tr>
-              <td>${subjectName}</td>
-              <td>${marksObtained}</td>
-              <td>${subjectTotal}</td>
-              <td>${percentage}%</td>
-            </tr>
-          `;
-          
-          totalObtained += marksObtained;
-          totalPossible += subjectTotal;
+        draftResultsBtn.addEventListener('click', () => {
+            loadDraftResults();
+            showSection(draftResultsSection);
         });
         
-        // Add total row
-        const totalPercentage = totalPossible > 0 ? ((totalObtained / totalPossible) * 100).toFixed(2) : 0;
-        html += `
-          <tr class="total-marks">
-            <td><strong>Total</strong></td>
-            <td><strong>${totalObtained}</strong></td>
-            <td><strong>${totalPossible}</strong></td>
-            <td><strong>${totalPercentage}%</strong></td>
-          </tr>
-        `;
+        oldResultsBtn.addEventListener('click', () => {
+            loadOldResults();
+            showSection(oldResultsSection);
+        });
         
-        document.getElementById('total-percentage').textContent = 
-          `Total Percentage: ${totalPercentage}%`;
+        // Online Tests Button Handler
+        onlineTestsBtn.addEventListener('click', () => {
+            window.open('publishtest.html', '_blank');
+        });
         
-        // Calculate and display division
-        const divisionInfo = calculateDivision(parseFloat(totalPercentage));
-        const divisionElement = document.getElementById('division-display');
-        divisionElement.textContent = `Division: ${divisionInfo.division}`;
-        divisionElement.style.backgroundColor = divisionInfo.bgColor;
-        divisionElement.style.color = divisionInfo.color;
-        divisionElement.style.border = `2px solid ${divisionInfo.color}`;
+        // NEW: Fee Management Button Handler
+        feeManagementBtn.addEventListener('click', () => {
+            // Opens the fee dashboard (which we created earlier)
+            window.location.href = 'dashboard-study-point.html';
+        });
         
-      } else {
-        html = '<tr><td colspan="4" style="text-align:center;">Marks data not available</td></tr>';
-        document.getElementById('division-display').textContent = 'Division: N/A';
-      }
-      
-      marksTable.innerHTML = html;
-      
-      // Scroll to result
-      resultCard.scrollIntoView({ behavior: 'smooth' });
-    }
+        // Handle back to dashboard with confirmation for edited published results
+        backToDashboardBtn.addEventListener('click', () => {
+            if (isEditingPublishedResult && hasChanges) {
+                editPublishedConfirmModal.show();
+            } else {
+                resetCreateResultForm();
+                showSection(dashboardSection);
+            }
+        });
+        
+        backToDashboardBtn2.addEventListener('click', () => {
+            showSection(dashboardSection);
+        });
+        
+        backToDashboardBtn3.addEventListener('click', () => {
+            showSection(dashboardSection);
+        });
 
-    // Create clone for PDF generation
-    function createPDFClone() {
-      const resultCard = document.getElementById('result-card');
-      const cloneContainer = document.getElementById('pdf-clone-container');
-      
-      // Clear previous clone
-      cloneContainer.innerHTML = '';
-      
-      // Create a deep clone of the result card
-      const clone = resultCard.cloneNode(true);
-      clone.classList.add('pdf-clone');
-      clone.style.display = 'block';
-      clone.style.width = '100%';
-      clone.style.maxWidth = '800px';
-      clone.style.margin = '20px auto';
-      clone.style.padding = '20px';
-      clone.style.background = 'white';
-      clone.style.boxShadow = '0 0 20px rgba(0,0,0,0.1)';
-      clone.style.position = 'relative';
-      clone.style.left = '0';
-      clone.style.top = '0';
-      clone.style.transform = 'none';
-      clone.style.zIndex = '10001';
-      
-      // Remove action buttons from clone
-      const actionButtons = clone.querySelector('.action-buttons');
-      if (actionButtons) {
-        actionButtons.remove();
-      }
-      
-      // Show the clone container and add the clone
-      cloneContainer.appendChild(clone);
-      cloneContainer.style.visibility = 'visible';
-      cloneContainer.style.opacity = '0';
-      cloneContainer.style.pointerEvents = 'none';
-      
-      return clone;
-    }
+        // Confirmation Modal Button Handlers
+        dontSaveConfirmBtn.addEventListener('click', () => {
+            resetCreateResultForm();
+            showSection(dashboardSection);
+        });
+        
+        saveDraftConfirmBtn.addEventListener('click', () => {
+            if (validateResultData()) {
+                saveEditedPublishedResultAsDraft();
+            } else {
+                showSection(dashboardSection);
+            }
+        });
+        
+        saveChangesConfirmBtn.addEventListener('click', () => {
+            if (validateResultData()) {
+                updateExistingPublishedResult();
+            } else {
+                showSection(dashboardSection);
+            }
+        });
 
-    // Preload all images in the result card
-    function preloadImages(callback) {
-      const images = document.querySelectorAll('#result-card img');
-      let loadedCount = 0;
-      const totalImages = images.length;
-      
-      if (totalImages === 0) {
-        callback();
-        return;
-      }
-      
-      const onImageLoad = () => {
-        loadedCount++;
-        if (loadedCount === totalImages) {
-          callback();
+        // Create Result - Step 1: Generate Subject Fields
+        generateSubjectFieldsBtn.addEventListener('click', () => {
+            const subjectCount = parseInt(subjectCountInput.value);
+            if (subjectCount < 1) return;
+            
+            subjectFields.innerHTML = '';
+            subjects = [];
+            
+            for (let i = 0; i < subjectCount; i++) {
+                const subjectBox = document.createElement('div');
+                subjectBox.className = 'subject-box';
+                subjectBox.innerHTML = `
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="form-label">Subject ${i+1} Name</label>
+                            <input type="text" class="form-control subject-name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Total Marks</label>
+                            <input type="number" class="form-control subject-total" min="1" required>
+                        </div>
+                    </div>
+                `;
+                subjectFields.appendChild(subjectBox);
+            }
+            
+            step1NextBtn.classList.remove('d-none');
+        });
+
+        // Create Result - Step 1: Next Button
+        nextToStudentEntryBtn.addEventListener('click', () => {
+            const subjectNameInputs = document.querySelectorAll('.subject-name');
+            const subjectTotalInputs = document.querySelectorAll('.subject-total');
+            
+            subjects = [];
+            let valid = true;
+            
+            for (let i = 0; i < subjectNameInputs.length; i++) {
+                const name = subjectNameInputs[i].value.trim();
+                const total = parseInt(subjectTotalInputs[i].value);
+                
+                if (!name || isNaN(total) || total < 1) {
+                    valid = false;
+                    break;
+                }
+                
+                subjects.push({ name, total });
+            }
+            
+            if (!valid) {
+                alert('Please fill all subject fields correctly');
+                return;
+            }
+            
+            generateMarksFields();
+            
+            examSetupStep.classList.add('d-none');
+            studentEntryStep.classList.remove('d-none');
+            
+            setupChangeTracking();
+        });
+
+        // Create Result - Generate Marks Fields
+        function generateMarksFields() {
+            marksFields.innerHTML = '<h5>Enter Marks</h5>';
+            
+            subjects.forEach((subject, index) => {
+                const marksField = document.createElement('div');
+                marksField.className = 'mb-2';
+                marksField.innerHTML = `
+                    <label class="form-label">${subject.name} (Max: ${subject.total})</label>
+                    <input type="number" class="form-control subject-mark" data-subject="${subject.name}" min="0" max="${subject.total}" required>
+                `;
+                marksFields.appendChild(marksField);
+            });
         }
-      };
-      
-      images.forEach(img => {
-        if (img.complete) {
-          onImageLoad();
-        } else {
-          img.onload = onImageLoad;
-          img.onerror = onImageLoad; // Also continue if image fails to load
-        }
-      });
-    }
 
-    // Download result as PDF - FIXED VERSION
-    function downloadResultAsPDF() {
-      // Disable the download button to prevent multiple clicks
-      const downloadBtn = document.querySelector('.download-btn');
-      const originalText = downloadBtn.innerHTML;
-      downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating PDF...';
-      downloadBtn.disabled = true;
-      
-      // Create a clone for PDF generation
-      const clone = createPDFClone();
-      const cloneContainer = document.getElementById('pdf-clone-container');
-      
-      // Show the clone container (but keep it invisible)
-      cloneContainer.style.visibility = 'visible';
-      cloneContainer.style.opacity = '0';
-      
-      // Wait a bit for DOM to settle
-      setTimeout(() => {
-        // Preload images before generating PDF
-        preloadImages(() => {
-          // Generate PDF with optimized settings
-          const options = {
-            margin: [10, 10, 10, 10],
-            filename: `STUDY_POINT_Result_${currentStudentResult?.rollNo || 'unknown'}.pdf`,
-            image: { 
-              type: 'jpeg', 
-              quality: 0.98 
-            },
-            html2canvas: { 
-              scale: 2,
-              useCORS: true,
-              letterRendering: true,
-              scrollX: 0,
-              scrollY: 0,
-              windowWidth: clone.scrollWidth,
-              windowHeight: clone.scrollHeight,
-              backgroundColor: '#ffffff',
-              logging: false,
-              onclone: function(clonedDoc) {
-                // Ensure all images in clone are visible
-                const clonedImages = clonedDoc.querySelectorAll('img');
-                clonedImages.forEach(img => {
-                  img.style.display = 'block';
-                  img.style.maxWidth = '100%';
-                  img.style.height = 'auto';
+        // Create Result - Increment Roll No
+        incrementRollBtn.addEventListener('click', () => {
+            rollNoInput.value = parseInt(rollNoInput.value) + 1;
+        });
+
+        // Create Result - Add Student (with toast)
+        addStudentBtn.addEventListener('click', () => {
+            const rollNo = parseInt(rollNoInput.value);
+            const name = studentNameInput.value.trim();
+            const fatherName = fatherNameInput.value.trim();
+            
+            if (!name) {
+                alert('Please enter student name');
+                return;
+            }
+            
+            const markInputs = document.querySelectorAll('.subject-mark');
+            const marks = {};
+            let valid = true;
+            
+            markInputs.forEach(input => {
+                const subjectName = input.getAttribute('data-subject');
+                const mark = parseInt(input.value);
+                
+                if (isNaN(mark) || mark < 0) {
+                    valid = false;
+                    return;
+                }
+                
+                const subject = subjects.find(s => s.name === subjectName);
+                if (mark > subject.total) {
+                    alert(`Marks for ${subjectName} cannot exceed ${subject.total}`);
+                    valid = false;
+                    return;
+                }
+                
+                marks[subjectName] = mark;
+            });
+            
+            if (!valid) return;
+            
+            students.push({
+                rollNo,
+                name,
+                fatherName,
+                marks
+            });
+            
+            updateStudentsTable();
+            
+            studentNameInput.value = '';
+            fatherNameInput.value = '';
+            markInputs.forEach(input => input.value = '');
+            rollNoInput.value = rollNo + 1;
+            
+            hasChanges = true;
+            updateButtonVisibility();
+
+            showToast('Student added successfully!');
+        });
+
+        // Create Result - Update Students Table
+        function updateStudentsTable() {
+            studentsTableBody.innerHTML = '';
+            
+            students.forEach((student, index) => {
+                const row = document.createElement('tr');
+                row.className = 'student-row';
+                
+                let marksHtml = '';
+                subjects.forEach(subject => {
+                    marksHtml += `<div>${subject.name}: ${student.marks[subject.name] || 0}/${subject.total}</div>`;
                 });
-              }
-            },
-            jsPDF: { 
-              unit: 'mm', 
-              format: 'a4', 
-              orientation: 'portrait',
-              compress: true
-            },
-            pagebreak: { 
-              mode: ['avoid-all', 'css', 'legacy'],
-              before: '.page-break-before',
-              after: '.page-break-after',
-              avoid: ['.no-break', 'tr', 'td']
-            }
-          };
-          
-          // Generate and save PDF
-          html2pdf().set(options).from(clone).save().then(() => {
-            // Cleanup: hide the clone container
-            cloneContainer.style.visibility = 'hidden';
-            cloneContainer.innerHTML = '';
+                
+                row.innerHTML = `
+                    <td>${student.rollNo}</td>
+                    <td>${student.name}</td>
+                    <td>${student.fatherName || '-'}</td>
+                    <td>${marksHtml}</td>
+                    <td>
+                        <button class="btn btn-sm btn-warning edit-student" data-index="${index}">Edit</button>
+                        <button class="btn btn-sm btn-danger delete-student" data-index="${index}">Delete</button>
+                    </td>
+                `;
+                
+                studentsTableBody.appendChild(row);
+            });
             
-            // Re-enable the download button
-            downloadBtn.innerHTML = originalText;
-            downloadBtn.disabled = false;
+            document.querySelectorAll('.edit-student').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const index = parseInt(e.target.getAttribute('data-index'));
+                    editStudent(index);
+                });
+            });
             
-            // Show success message
-            alert('PDF downloaded successfully!');
-          }).catch(error => {
-            console.error('PDF generation error:', error);
-            cloneContainer.style.visibility = 'hidden';
-            cloneContainer.innerHTML = '';
-            
-            // Re-enable the download button
-            downloadBtn.innerHTML = originalText;
-            downloadBtn.disabled = false;
-            
-            // Fallback: try simple method
-            alert('Generating PDF... Please wait.');
-            try {
-              const fallbackOptions = {
-                margin: 10,
-                filename: `STUDY_POINT_Result_${currentStudentResult?.rollNo || 'unknown'}.pdf`,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-              };
-              
-              html2pdf().set(fallbackOptions).from(resultCard).save().then(() => {
-                downloadBtn.innerHTML = originalText;
-                downloadBtn.disabled = false;
-              });
-            } catch (fallbackError) {
-              alert('Error generating PDF. Please try again or take a screenshot.');
-              downloadBtn.innerHTML = originalText;
-              downloadBtn.disabled = false;
-            }
-          });
-        });
-      }, 500);
-    }
+            document.querySelectorAll('.delete-student').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const index = parseInt(e.target.getAttribute('data-index'));
+                    deleteStudent(index);
+                });
+            });
+        }
 
-    // Initialize on page load
-    document.addEventListener('DOMContentLoaded', function() {
-      fetchAllResults();
-      fetchNotice();
-      fetchAboutLines();
-      
-      // Add event listener for Enter key in admin password field
-      document.getElementById('admin-password').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-          checkAdminPassword();
+        // Create Result - Edit Student
+        function editStudent(index) {
+            const student = students[index];
+            editingStudentIndex = index;
+            
+            rollNoInput.value = student.rollNo;
+            studentNameInput.value = student.name;
+            fatherNameInput.value = student.fatherName || '';
+            
+            const markInputs = document.querySelectorAll('.subject-mark');
+            markInputs.forEach(input => {
+                const subjectName = input.getAttribute('data-subject');
+                input.value = student.marks[subjectName] || 0;
+            });
+            
+            addStudentBtn.classList.add('d-none');
+            updateStudentBtn.classList.remove('d-none');
+            cancelEditBtn.classList.remove('d-none');
+
+            showToast('Student edit mode activated!');
         }
-      });
-      
-      // Add event listener for Enter key in roll input field
-      document.getElementById('roll-input').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-          fetchStudentResult();
+
+        // Create Result - Update Student (with toast)
+        updateStudentBtn.addEventListener('click', () => {
+            if (editingStudentIndex === null) return;
+            
+            const rollNo = parseInt(rollNoInput.value);
+            const name = studentNameInput.value.trim();
+            const fatherName = fatherNameInput.value.trim();
+            
+            if (!name) {
+                alert('Please enter student name');
+                return;
+            }
+            
+            const markInputs = document.querySelectorAll('.subject-mark');
+            const marks = {};
+            let valid = true;
+            
+            markInputs.forEach(input => {
+                const subjectName = input.getAttribute('data-subject');
+                const mark = parseInt(input.value);
+                
+                if (isNaN(mark) || mark < 0) {
+                    valid = false;
+                    return;
+                }
+                
+                const subject = subjects.find(s => s.name === subjectName);
+                if (mark > subject.total) {
+                    alert(`Marks for ${subjectName} cannot exceed ${subject.total}`);
+                    valid = false;
+                    return;
+                }
+                
+                marks[subjectName] = mark;
+            });
+            
+            if (!valid) return;
+            
+            students[editingStudentIndex] = {
+                rollNo,
+                name,
+                fatherName,
+                marks
+            };
+            
+            updateStudentsTable();
+            cancelEdit();
+            
+            hasChanges = true;
+            updateButtonVisibility();
+
+            showToast('Student updated successfully!');
+        });
+
+        // Create Result - Cancel Edit
+        cancelEditBtn.addEventListener('click', cancelEdit);
+
+        function cancelEdit() {
+            editingStudentIndex = null;
+            
+            studentNameInput.value = '';
+            fatherNameInput.value = '';
+            const markInputs = document.querySelectorAll('.subject-mark');
+            markInputs.forEach(input => input.value = '');
+            
+            addStudentBtn.classList.remove('d-none');
+            updateStudentBtn.classList.add('d-none');
+            cancelEditBtn.classList.add('d-none');
         }
-      });
-    });
-  </script>
+
+        // Create Result - Delete Student (with toast)
+        function deleteStudent(index) {
+            if (confirm('Are you sure you want to delete this student?')) {
+                students.splice(index, 1);
+                updateStudentsTable();
+                
+                hasChanges = true;
+                updateButtonVisibility();
+                
+                showToast('Student deleted successfully!');
+            }
+        }
+
+        // Setup change tracking for inputs
+        function setupChangeTracking() {
+            const trackedInputs = [
+                examNameInput,
+                ...document.querySelectorAll('.subject-name'),
+                ...document.querySelectorAll('.subject-total'),
+                ...document.querySelectorAll('.subject-mark'),
+                studentNameInput,
+                fatherNameInput
+            ];
+            
+            trackedInputs.forEach(input => {
+                input.addEventListener('input', () => {
+                    hasChanges = true;
+                    updateButtonVisibility();
+                });
+            });
+        }
+
+        // Update button visibility based on editing mode
+        function updateButtonVisibility() {
+            if (isEditingPublishedResult) {
+                saveDraftBtn.classList.add('d-none');
+                publishResultBtn.classList.add('d-none');
+                saveChangesBtn.classList.remove('d-none');
+                dontSaveBtn.classList.remove('d-none');
+            } else {
+                saveDraftBtn.classList.remove('d-none');
+                publishResultBtn.classList.remove('d-none');
+                saveChangesBtn.classList.add('d-none');
+                dontSaveBtn.classList.add('d-none');
+            }
+        }
+
+        // Create Result - Save as Draft (with toast)
+        saveDraftBtn.addEventListener('click', async () => {
+            if (!validateResultData()) return;
+            
+            try {
+                const resultData = {
+                    examName: examNameInput.value,
+                    subjects,
+                    students,
+                    createdAt: serverTimestamp()
+                };
+                
+                if (editingDraftId) {
+                    const draftRef = doc(db, "draft_results", editingDraftId);
+                    await updateDoc(draftRef, resultData);
+                    showToast('Draft updated successfully!');
+                } else {
+                    await addDoc(collection(db, "draft_results"), resultData);
+                    showToast('Draft saved successfully!');
+                }
+                
+                resetCreateResultForm();
+                showSection(dashboardSection);
+            } catch (error) {
+                console.error('Error saving draft:', error);
+                alert('Error saving draft: ' + error.message);
+            }
+        });
+
+        // Save Changes button for editing published results
+        saveChangesBtn.addEventListener('click', () => {
+            if (validateResultData()) {
+                updateExistingPublishedResult();
+            }
+        });
+
+        // Don't Save button handler
+        dontSaveBtn.addEventListener('click', () => {
+            if (confirm('Are you sure you want to discard all changes?')) {
+                resetCreateResultForm();
+                showSection(dashboardSection);
+            }
+        });
+
+        // Update existing published result
+        async function updateExistingPublishedResult() {
+            if (!validateResultData()) return;
+            
+            try {
+                const resultData = {
+                    examName: examNameInput.value,
+                    subjects,
+                    students,
+                    updatedAt: serverTimestamp()
+                };
+                
+                const resultRef = doc(db, "results", editingPublishedResultId);
+                await updateDoc(resultRef, resultData);
+                
+                showToast('Result updated successfully!');
+                
+                resetCreateResultForm();
+                showSection(dashboardSection);
+            } catch (error) {
+                console.error('Error updating result:', error);
+                alert('Error updating result: ' + error.message);
+            }
+        }
+
+        // Save edited published result as draft
+        async function saveEditedPublishedResultAsDraft() {
+            try {
+                const resultData = {
+                    examName: examNameInput.value,
+                    subjects,
+                    students,
+                    createdAt: serverTimestamp(),
+                    originalResultId: editingPublishedResultId
+                };
+                
+                await addDoc(collection(db, "draft_results"), resultData);
+                showToast('Changes saved as draft!');
+                
+                resetCreateResultForm();
+                showSection(dashboardSection);
+            } catch (error) {
+                console.error('Error saving draft:', error);
+                alert('Error saving draft: ' + error.message);
+            }
+        }
+
+        // Create Result - Publish Result (with toast)
+        publishResultBtn.addEventListener('click', async () => {
+            if (!validateResultData()) return;
+            
+            if (isEditingPublishedResult) {
+                alert('Please use "Save Changes" button to update published results.');
+                return;
+            }
+            
+            try {
+                const resultData = {
+                    examName: examNameInput.value,
+                    subjects,
+                    students,
+                    createdAt: serverTimestamp()
+                };
+                
+                await addDoc(collection(db, "results"), resultData);
+                
+                if (editingDraftId) {
+                    await deleteDoc(doc(db, "draft_results", editingDraftId));
+                }
+                
+                publishedToast.show();
+                
+                resetCreateResultForm();
+                showSection(dashboardSection);
+            } catch (error) {
+                console.error('Error publishing result:', error);
+                alert('Error publishing result: ' + error.message);
+            }
+        });
+
+        // Validate Result Data
+        function validateResultData() {
+            if (!examNameInput.value.trim()) {
+                alert('Please enter exam name');
+                return false;
+            }
+            
+            if (students.length === 0) {
+                alert('Please add at least one student');
+                return false;
+            }
+            
+            return true;
+        }
+
+        // Reset Create Result Form
+        function resetCreateResultForm() {
+            examNameInput.value = '';
+            subjectCountInput.value = '';
+            subjectFields.innerHTML = '';
+            step1NextBtn.classList.add('d-none');
+            examSetupStep.classList.remove('d-none');
+            studentEntryStep.classList.add('d-none');
+            students = [];
+            studentsTableBody.innerHTML = '';
+            editingDraftId = null;
+            isEditingPublishedResult = false;
+            editingPublishedResultId = null;
+            hasChanges = false;
+            cancelEdit();
+            updateButtonVisibility();
+        }
+
+        // Load Draft Results
+        async function loadDraftResults() {
+            try {
+                const q = query(collection(db, "draft_results"), orderBy("createdAt", "desc"));
+                const querySnapshot = await getDocs(q);
+                
+                draftResultsList.innerHTML = '';
+                
+                if (querySnapshot.empty) {
+                    draftResultsList.innerHTML = '<div class="col-12"><p class="text-center">No draft results found.</p></div>';
+                    return;
+                }
+                
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const draftCard = document.createElement('div');
+                    draftCard.className = 'col-md-6 col-lg-4 mb-3';
+                    draftCard.innerHTML = `
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">${data.examName}</h5>
+                                <p class="card-text">Subjects: ${data.subjects.length}</p>
+                                <p class="card-text">Students: ${data.students.length}</p>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-sm btn-primary edit-draft" data-id="${doc.id}">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-draft" data-id="${doc.id}">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    draftResultsList.appendChild(draftCard);
+                });
+                
+                document.querySelectorAll('.edit-draft').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const draftId = e.target.getAttribute('data-id');
+                        editDraft(draftId);
+                    });
+                });
+                
+                document.querySelectorAll('.delete-draft').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const draftId = e.target.getAttribute('data-id');
+                        deleteDraft(draftId);
+                    });
+                });
+            } catch (error) {
+                console.error('Error loading draft results:', error);
+                alert('Error loading draft results: ' + error.message);
+            }
+        }
+
+        // Edit Draft (with toast)
+        async function editDraft(draftId) {
+            try {
+                const draftDoc = await getDocs(query(collection(db, "draft_results"), where("__name__", "==", draftId)));
+                
+                if (draftDoc.empty) {
+                    alert('Draft not found');
+                    return;
+                }
+                
+                const data = draftDoc.docs[0].data();
+                
+                examNameInput.value = data.examName;
+                subjectCountInput.value = data.subjects.length;
+                
+                generateSubjectFieldsBtn.click();
+                
+                setTimeout(() => {
+                    const subjectNameInputs = document.querySelectorAll('.subject-name');
+                    const subjectTotalInputs = document.querySelectorAll('.subject-total');
+                    
+                    data.subjects.forEach((subject, index) => {
+                        if (subjectNameInputs[index]) {
+                            subjectNameInputs[index].value = subject.name;
+                        }
+                        if (subjectTotalInputs[index]) {
+                            subjectTotalInputs[index].value = subject.total;
+                        }
+                    });
+                    
+                    nextToStudentEntryBtn.click();
+                    
+                    students = data.students;
+                    updateStudentsTable();
+                    
+                    editingDraftId = draftId;
+                    isEditingPublishedResult = false;
+                    hasChanges = false;
+                    
+                    updateButtonVisibility();
+                    
+                    showSection(createResultSection);
+                }, 100);
+
+                showToast('Draft loaded for editing!');
+            } catch (error) {
+                console.error('Error loading draft:', error);
+                alert('Error loading draft: ' + error.message);
+            }
+        }
+
+        // Delete Draft (with toast)
+        async function deleteDraft(draftId) {
+            if (!confirm('Are you sure you want to delete this draft?')) return;
+            
+            try {
+                await deleteDoc(doc(db, "draft_results", draftId));
+                showToast('Draft deleted successfully!');
+                loadDraftResults();
+            } catch (error) {
+                console.error('Error deleting draft:', error);
+                alert('Error deleting draft: ' + error.message);
+            }
+        }
+
+        // Load Published Results
+        async function loadOldResults() {
+            try {
+                const q = query(collection(db, "results"), orderBy("createdAt", "desc"));
+                const querySnapshot = await getDocs(q);
+                
+                oldResultsList.innerHTML = '';
+                
+                if (querySnapshot.empty) {
+                    oldResultsList.innerHTML = '<div class="col-12"><p class="text-center">No published results found.</p></div>';
+                    return;
+                }
+                
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const date = data.createdAt ? new Date(data.createdAt.toDate()).toLocaleDateString() : 'Unknown date';
+                    
+                    const resultCard = document.createElement('div');
+                    resultCard.className = 'col-md-6 col-lg-4 mb-3';
+                    resultCard.innerHTML = `
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">${data.examName}</h5>
+                                <p class="card-text">Date: ${date}</p>
+                                <p class="card-text">Subjects: ${data.subjects.length}</p>
+                                <p class="card-text">Students: ${data.students.length}</p>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-sm btn-primary view-result" data-id="${doc.id}">View</button>
+                                    <button class="btn btn-sm btn-warning edit-result" data-id="${doc.id}">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-result" data-id="${doc.id}">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    oldResultsList.appendChild(resultCard);
+                });
+                
+                document.querySelectorAll('.view-result').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const resultId = e.target.getAttribute('data-id');
+                        viewResult(resultId);
+                    });
+                });
+
+                document.querySelectorAll('.edit-result').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const resultId = e.target.getAttribute('data-id');
+                        editResult(resultId);
+                    });
+                });
+                
+                document.querySelectorAll('.delete-result').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const resultId = e.target.getAttribute('data-id');
+                        deleteResult(resultId);
+                    });
+                });
+            } catch (error) {
+                console.error('Error loading published results:', error);
+                alert('Error loading published results: ' + error.message);
+            }
+        }
+
+        // Edit Result (Published Result) (with toast)
+        async function editResult(resultId) {
+            try {
+                const resultDoc = await getDocs(query(collection(db, "results"), where("__name__", "==", resultId)));
+                
+                if (resultDoc.empty) {
+                    alert('Result not found');
+                    return;
+                }
+                
+                const data = resultDoc.docs[0].data();
+                const docId = resultDoc.docs[0].id;
+                
+                examNameInput.value = data.examName;
+                subjectCountInput.value = data.subjects.length;
+                
+                generateSubjectFieldsBtn.click();
+                
+                setTimeout(() => {
+                    const subjectNameInputs = document.querySelectorAll('.subject-name');
+                    const subjectTotalInputs = document.querySelectorAll('.subject-total');
+                    
+                    data.subjects.forEach((subject, index) => {
+                        if (subjectNameInputs[index]) {
+                            subjectNameInputs[index].value = subject.name;
+                        }
+                        if (subjectTotalInputs[index]) {
+                            subjectTotalInputs[index].value = subject.total;
+                        }
+                    });
+                    
+                    nextToStudentEntryBtn.click();
+                    
+                    students = data.students;
+                    updateStudentsTable();
+                    
+                    editingDraftId = null;
+                    isEditingPublishedResult = true;
+                    editingPublishedResultId = docId;
+                    hasChanges = false;
+                    
+                    updateButtonVisibility();
+                    
+                    showSection(createResultSection);
+                }, 100);
+
+                showToast('Result loaded for editing!');
+            } catch (error) {
+                console.error('Error loading result:', error);
+                alert('Error loading result: ' + error.message);
+            }
+        }
+
+        // Delete Result (Published Result) (with toast)
+        async function deleteResult(resultId) {
+            if (!confirm('Are you sure you want to delete this published result?')) return;
+            
+            try {
+                await deleteResultFromDB(resultId);
+                showToast('Result deleted successfully!');
+                loadOldResults();
+            } catch (error) {
+                console.error('Error deleting result:', error);
+                alert('Error deleting result: ' + error.message);
+            }
+        }
+
+        // Delete Result from Database
+        async function deleteResultFromDB(resultId) {
+            await deleteDoc(doc(db, "results", resultId));
+        }
+
+        // View Result
+        async function viewResult(resultId) {
+            try {
+                const resultDoc = await getDocs(query(collection(db, "results"), where("__name__", "==", resultId)));
+                
+                if (resultDoc.empty) {
+                    alert('Result not found');
+                    return;
+                }
+                
+                const data = resultDoc.docs[0].data();
+                const date = data.createdAt ? new Date(data.createdAt.toDate()).toLocaleDateString() : 'Unknown date';
+                
+                resultModalTitle.textContent = data.examName;
+                
+                let resultHtml = `
+                    <p><strong>Date:</strong> ${date}</p>
+                    <p><strong>Subjects:</strong> ${data.subjects.map(s => `${s.name} (${s.total})`).join(', ')}</p>
+                    <p><strong>Total Students:</strong> ${data.students.length}</p>
+                    
+                    <h5 class="mt-4">Student Results</h5>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Roll No</th>
+                                    <th>Name</th>
+                                    <th>Father Name</th>
+                `;
+                
+                data.subjects.forEach(subject => {
+                    resultHtml += `<th>${subject.name}</th>`;
+                });
+                
+                resultHtml += `<th>Total</th>`;
+                resultHtml += `<th>Percentage</th>`;
+                
+                resultHtml += `
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                data.students.forEach(student => {
+                    let totalMarks = 0;
+                    let totalMaxMarks = 0;
+                    
+                    resultHtml += `
+                        <tr>
+                            <td>${student.rollNo}</td>
+                            <td>${student.name}</td>
+                            <td>${student.fatherName || '-'}</td>
+                    `;
+                    
+                    data.subjects.forEach(subject => {
+                        const mark = student.marks[subject.name] || 0;
+                        totalMarks += mark;
+                        totalMaxMarks += subject.total;
+                        
+                        resultHtml += `<td>${mark}/${subject.total}</td>`;
+                    });
+                    
+                    const percentage = totalMaxMarks > 0 ? ((totalMarks / totalMaxMarks) * 100).toFixed(2) : 0;
+                    
+                    resultHtml += `
+                            <td>${totalMarks}/${totalMaxMarks}</td>
+                            <td>${percentage}%</td>
+                        </tr>
+                    `;
+                });
+                
+                resultHtml += `
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                
+                resultDetails.innerHTML = resultHtml;
+                resultModal.show();
+            } catch (error) {
+                console.error('Error loading result:', error);
+                alert('Error loading result: ' + error.message);
+            }
+        }
+
+        // Helper Functions
+        function showSection(section) {
+            dashboardSection.classList.remove('active');
+            createResultSection.classList.remove('active');
+            draftResultsSection.classList.remove('active');
+            oldResultsSection.classList.remove('active');
+            
+            section.classList.add('active');
+        }
+
+        function showToast(message) {
+            toastMessage.textContent = message;
+            successToast.show();
+        }
+    </script>
 </body>
 </html>
